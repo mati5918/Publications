@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Publications.Models;
+using Publications.Models.Entities;
 
-namespace Publications.Data
+namespace Publications.Models
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
@@ -22,5 +23,9 @@ namespace Publications.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+
+        public DbSet<PublicationTemplate> PublicationTemplates { get; set; }
+        public DbSet<PublicationField> PublicationFields { get; set; }
+        public DbSet<FieldTemplate> FieldsTemplates { get; set; }
     }
 }

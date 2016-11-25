@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Publications.Models;
 using Publications.Models.ManageViewModels;
 using Publications.Services;
+using Publications.Models.Entities;
 
 namespace Publications.Controllers
 {

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Publications.Data;
 using Publications.Models;
 using Publications.Services;
+using Publications.Models.Entities;
 
 namespace Publications
 {
@@ -52,6 +53,7 @@ namespace Publications
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddScoped<TemplatesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,6 +85,8 @@ namespace Publications
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            SeedData.Initialize(app.ApplicationServices);
         }
     }
 }
