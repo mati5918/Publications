@@ -1,0 +1,149 @@
+@model Publications.Models.ViewModels.TemplateVM
+
+@{
+    string title = ViewBag.IsNewTemplate ? "Nowy szablon" : "Edycja szablonu";
+    ViewData["Title"] = title;
+}
+
+<div class="row">
+    <div class="col-sm-4">
+        <h3>@title</h3>
+    </div>
+    <div class="col-sm-6">
+        <div class="pull-right">
+            <button class="btn btn-primary " style="margin-top:20px;"><span class="glyphicon glyphicon-save"></span> Zapisz</button>
+            <button class="btn btn-danger " style="margin-top:20px;">Anuluj</button>
+        </div>
+    </div>
+</div>
+<br />
+
+
+<div>
+    <form class="form-horizontal">
+        <div class="form-group">
+            <div class="col-sm-1">
+                <label class="control-label">Nazwa:</label>
+            </div>
+            <div class="col-sm-10">
+                <input asp-for="Name" class="form-control" style="width:300px;" id="templateName" />
+                <span class="help-block">Pole wymagane.</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-1">
+                <label class="control-label">Opis:</label>
+            </div>
+            <div class="col-sm-10">
+                <textarea asp-for="Description" class="form-control" style="width:300px;" id="templateDescription" rows="4"></textarea>
+                <span class="help-block"></span>
+            </div>
+        </div>
+
+        
+    </form>
+</div>
+<br />
+<div class="row">
+    <div class="alert alert-info col-sm-10">
+        <span class="glyphicon glyphicon-info-sign"></span><strong> Kazdy szablon zawiera domyslnie takie pola jak nazwa, autorzy, wersja elektroniczna.</strong>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <h3>Pozostale pola szablonu</h3>
+    </div>
+    <div class="col-sm-6">
+        <div class="pull-right">
+            <button class="btn btn-success" style="width:180px; margin-top:20px;" id="addField"><span class="glyphicon glyphicon-plus"></span> Dodaj istniejace pole</button>
+            <button class="btn btn-info " style="width:180px; margin-top:20px;" data-toggle="modal" data-target="#addModal"><span class="glyphicon glyphicon-plus"> </span> Dodaj nowe pole</button>
+        </div>
+    </div>
+</div>
+<br />
+
+<div class="row fieldsList">
+    <div class="col-sm-10">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-1">#</th>
+                    <th class="col-sm-5">Typ</th>
+                    <th class="col-sm-5">Nazwa</th>
+                    <th class="col-sm-1"></th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="addModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Stworz nowe pole.</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <label class="control-label">Typ:</label>
+                        </div>
+                        <div class="col-sm-10">
+                            <select class="form-control"><option value="0" selected>Data</option></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <label class="control-label">Nazwa:</label>
+                        </div>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="authorInput" maxlength="20" />
+                            <span class="help-block">Pole wymagane. Max 20 znakow.</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnPublish" class="btn btn-success" disabled data-dismiss="modal">Dodaj</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Anuluj</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#addField").click(function () {
+        $.ajax({
+            url: "@Url.Action("AddField")",
+            type: "GET",
+            success: function (response) {
+                $("tbody").append(response);
+                renumerateTableRows();
+            }
+        });
+    });
+
+    $(".fieldsList").on("change", ".fieldType", function () {
+        var type = $(this).val();
+        var url = "/Templates/GetFieldsByType?type=" + type;
+        var select = $(this);
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function (response) {
+                $(select).parents("tr").find(".fieldsSelect").html(response);
+            }
+        });
+    });
+
+    $(".fieldsList").on("click", ".removeField", function () {
+        $(this).closest("tr").remove();
+        renumerateTableRows();
+    });
+</script>

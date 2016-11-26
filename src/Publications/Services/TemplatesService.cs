@@ -16,9 +16,9 @@ namespace Publications.Services
             this.context = context;
         }
 
-        public IEnumerable<TemplateGeneralVM> GetAllTemplates()
+        public IEnumerable<TemplateVM> GetAllTemplates()
         {
-            return context.PublicationTemplates.Select(t => new TemplateGeneralVM
+            return context.PublicationTemplates.Select(t => new TemplateVM
             {
                 CreationDate = t.CreationDate,
                 Description = t.Description,

@@ -48,3 +48,26 @@ textarea {
     display: none
   }
 }
+
+/*--------------------templates-----------------*/
+.fieldsList td select {
+  text-align: center;
+  margin-left: 15%;
+  max-width: 70%
+}
+.fieldsList td, .fieldsList th {
+  text-align: center;
+}
+
+.removeField {
+    margin-top: 7px;
+}
+
+
+.tableIndex {
+    padding-top: 7px;
+}
+
+.removeField:hover{
+    cursor:pointer;
+}
