@@ -26,17 +26,38 @@ namespace Publications.Controllers
         public IActionResult Add()
         {
             ViewBag.IsNewTemplate = true;
-            return View("Details", new TemplateVM());
+            return View("Details", new TemplateVM {TemplateId = -1 });
         }
 
         public IActionResult AddField()
         {
-            return PartialView("TemplateRow", new FieldVM());
+            return PartialView("TemplateRow", new FieldVM() { AttachId = -1});
         }
 
         public IActionResult GetFieldsByType(FieldType type)
         {
-            return PartialView("FieldsList", new FieldVM { PublicationFieldId = -1, Type = type });
+            return PartialView("FieldsList", new FieldVM { FieldId = -1, Type = type });
+        }
+
+        public IActionResult Details(int? templateId)
+        {
+            TemplateVM vm = service.GetTemplateById(templateId);
+            ViewBag.IsNewTemplate = false;
+            return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult Save([FromBody] SaveTemplateVM vm)
+        {
+            bool isSaveSuccess = service.Save(vm);
+            if (isSaveSuccess)
+            {
+                return Json(new { success = true, message = "Zapisano pomyœlnie!"});
+            }
+            else
+            {
+                return Json(new { success = false, message = "Wyst¹pi³ b³¹d w zapisie!" });
+            }
         }
     }
 }

@@ -7,8 +7,15 @@ namespace Publications.Models.ViewModels
 {
     public class FieldVM
     {
-        public int PublicationFieldId { get; set; }
+        public int FieldId { get; set; }
         public string Name { get; set; }
         public FieldType Type { get; set; }
+        public int AttachId { get; set; }
+    }
+
+    public class SaveFieldVM
+    {
+        public int FieldId { get; set; }
+        public int AttachId { get; set; }
     }
 }

@@ -11,16 +11,21 @@
     </div>
     <div class="col-sm-6">
         <div class="pull-right">
-            <button class="btn btn-primary " style="margin-top:20px;"><span class="glyphicon glyphicon-save"></span> Zapisz</button>
+            <button class="btn btn-primary " id="btnSave" style="margin-top:20px;"><span class="glyphicon glyphicon-save"></span> Zapisz</button>
             <button class="btn btn-danger " style="margin-top:20px;">Anuluj</button>
         </div>
     </div>
 </div>
 <br />
-
+<div class="row alertContainer" hidden>
+    <div class="alert col-sm-10">
+        <strong id="saveStatus"></strong>
+    </div>
+</div>
 
 <div>
     <form class="form-horizontal">
+        <input asp-for="TemplateId" id="templateId" hidden/>
         <div class="form-group">
             <div class="col-sm-1">
                 <label class="control-label">Nazwa:</label>
@@ -74,7 +79,10 @@
                 </tr>
             </thead>
             <tbody>
-                
+                @foreach(var field in Model.Fields)
+                {
+                    Html.RenderPartial("TemplateRow", field);
+                }
             </tbody>
         </table>
     </div>
@@ -118,6 +126,10 @@
 </div>
 
 <script type="text/javascript">
+    $(document).ready(function () {
+        renumerateTableRows();
+    })
+
     $("#addField").click(function () {
         $.ajax({
             url: "@Url.Action("AddField")",
@@ -146,4 +158,50 @@
         $(this).closest("tr").remove();
         renumerateTableRows();
     });
+
+    $("#btnSave").click(function () {
+        var data = collectTemplateData();
+        //console.log(data);
+        $.ajax({
+            url: "@Url.Action("Save")",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                var msg = response.message;
+                if (response.success) {
+                    $(".alertContainer .alert").addClass("alert-success");
+                    $(".alertContainer .alert").removeClass("alert-danger");
+
+                } else {
+                    $(".alertContainer .alert").removeClass("alert-success");
+                    $(".alertContainer .alert").addlass("alert-danger");
+                }
+                $("#saveStatus").text(msg);
+                $(".alertContainer").show();
+            }
+        });
+    });
+
+    function collectTemplateData() {
+        var fields = [];
+        $(".fieldsList tbody tr").each(function (i, v) {
+            var field = {
+                AttachId: $(v).find(".attachId").val(),
+                FieldId: $(v).find(".fieldId").val()
+            };
+            fields.push(field);
+        });
+        var saveVM = {
+            TemplateId: $("#templateId").val(),
+            Description: $("#templateDescription").val(),
+            Name: $("#templateName").val(),
+            Fields: fields
+        };
+
+        return saveVM;
+
+    }
 </script>
