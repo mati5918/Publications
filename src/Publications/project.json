@@ -1,11 +1,7 @@
-﻿{
+{
   "userSecretsId": "aspnet-Publications-7858a002-7779-4fde-801a-c32a2fb79234",
 
   "dependencies": {
-    "Microsoft.NETCore.App": {
-      "version": "1.0.0",
-      "type": "platform"
-    },
     "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0",
@@ -34,6 +30,10 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+    "Microsoft.NETCore.App": {
+      "version": "1.0.0",
+      "type": "platform"
+    },
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0",
     "Microsoft.VisualStudio.Web.CodeGeneration.Tools": {
       "version": "1.0.0-preview2-final",

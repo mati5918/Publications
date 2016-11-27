@@ -27,5 +27,6 @@ namespace Publications.Models
         public DbSet<PublicationTemplate> PublicationTemplates { get; set; }
         public DbSet<PublicationField> PublicationFields { get; set; }
         public DbSet<FieldTemplate> FieldsTemplates { get; set; }
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
     }
 }

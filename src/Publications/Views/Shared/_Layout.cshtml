@@ -36,6 +36,9 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Templates" asp-action="Browse">Szablony</a></li>
                 </ul>
+                <ul class="nav navbar-nav">
+                    <li><a asp-area="" asp-controller="Administration" asp-action="Users">Urzytkownicy</a></li>
+                </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>
@@ -51,6 +54,7 @@
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/bootbox/bootbox.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
@@ -61,6 +65,9 @@
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"
+                asp-fallback-src="~/lib/bootbox/bootbox.js">
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
