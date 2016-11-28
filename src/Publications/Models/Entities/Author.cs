@@ -11,6 +11,7 @@ namespace Publications.Models.Entities
         public string FirstName { get; set; }
         public string SecondName { get; set; }
         public AcademicDegree AcademicDegree { get; set; }
+
         public ApplicationUser ApplicationUser { get; set; }
     }
 }

@@ -8,9 +8,11 @@ using Publications.Services;
 using Microsoft.AspNetCore.Identity;
 using Publications.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Publications.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
         private AdminService _service;

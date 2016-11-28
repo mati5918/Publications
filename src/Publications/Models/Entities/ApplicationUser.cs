@@ -9,7 +9,5 @@ namespace Publications.Models.Entities
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
-        public int AuthorId { get; set; }
-        public Author author { get; set; }
     }
 }

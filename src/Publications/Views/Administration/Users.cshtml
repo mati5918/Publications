@@ -6,8 +6,9 @@
 }
 
 <h2>U?ytkownicy</h2>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 
-<table class="table">
+<table class="table" id="userTable">
     <thead>
         <tr>
 
@@ -50,6 +51,14 @@
 </table>
 
 @section scripts{
+    
+    <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+   <script>
+       $(document).ready(function () {
+           $("#userTable").DataTable();
+       });
+    </script>
+
     <script>
         $("#addAdminBtn").click(function () {
             userId = $(this).attr("data-id");

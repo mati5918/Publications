@@ -36,9 +36,13 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Templates" asp-action="Browse">Szablony</a></li>
                 </ul>
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Administration" asp-action="Users">Użytkownicy</a></li>
-                </ul>
+                @if (User.IsInRole("Admin"))
+                {
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="" asp-controller="Administration" asp-action="Users">Użytkownicy</a></li>
+                    </ul>
+                }
+                
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>
