@@ -54,6 +54,7 @@ namespace Publications
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddScoped<TemplatesService>();
+            services.AddScoped<StatisticsServcie>();
             services.AddScoped<AdminService>();
             services.AddScoped<FieldsProvider>();
         }
