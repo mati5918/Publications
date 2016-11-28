@@ -28,5 +28,10 @@ namespace Publications.Models
         public DbSet<PublicationField> PublicationFields { get; set; }
         public DbSet<FieldTemplate> FieldsTemplates { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        public DbSet<Publication> Publications { get; set; }
+        public DbSet<BranchOfKnowledge> BranchOfKnowledges { get; set; }
+        public DbSet<BranchOfKnowledgePublication> BranchOfKnowledgePublications { get; set; }
+        public DbSet<Author> Authors { get; set; }
+        public DbSet<AuthorPublication> AuthorPublications { get; set; }
     }
 }

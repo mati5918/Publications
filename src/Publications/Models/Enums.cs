@@ -22,4 +22,21 @@ namespace Publications.Models
         File
         
     }
+    public enum AcademicDegree
+    {
+        [Display(Name = "Licencjat")]
+        Bacheler,
+        [Display(Name = "Inżynier")]
+        Engineer,
+        [Display(Name = "Magister")]
+        Master,
+        [Display(Name = "Magister Inżynier")]
+        MasterEngineer,
+        [Display(Name = "Doktor")]
+        Doctor,
+        [Display(Name = "Doktor Inżynier")]
+        DoctorEngineer,
+        [Display(Name = "Profesor")]
+        Profesor
+    }
 }
