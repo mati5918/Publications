@@ -8,9 +8,10 @@ namespace Publications.Models.Statistisc
     {
         public List<AuthorViewModel> Authors { get; set; }
         public List<BranchOfKnowledge> BranchesOfKnowledge { get; set; }
+
         public DateTime StartOfTimeAmount { get; set; }
         public DateTime EndOfTimeAmount { get; set; }
-        public int KnowledgeBranchId { get; set; }
-        public int AuthorId { get; set; }
+        public int? KnowledgeBranchId { get; set; }
+        public int? AuthorId { get; set; }
     }
 }

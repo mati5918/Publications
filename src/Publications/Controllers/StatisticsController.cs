@@ -12,22 +12,28 @@ namespace Publications.Controllers
     public class StatisticsController : Controller
     {
 
-        private  StatisticsServcie service;
+        private readonly StatisticsServcie _service;
 
         public StatisticsController(StatisticsServcie service)
         {
-            this.service = service;
+            _service = service;
         }
 
         public IActionResult Statistics()
         {
             var statisticsFilter = new StatisticsFilter()
             {
-              Authors = service.GetAllAuthors(),
-              BranchesOfKnowledge = service.GetAllBranchesOfKnowledge()
+              Authors = _service.GetAllAuthors(),
+              BranchesOfKnowledge = _service.GetAllBranchesOfKnowledge()
             };
 
             return View(statisticsFilter);
+        }
+
+        public IActionResult ShowStatistics(StatisticsFilter filter)
+        {
+            var statistics = _service.GetStatistics(filter);
+            return View(statistics);
         }
     }
 }

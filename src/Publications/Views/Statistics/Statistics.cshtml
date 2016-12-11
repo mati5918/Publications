@@ -25,7 +25,7 @@
 </div>
 
 <div>
-    <form class="form-horizontal">
+    <form asp-controller="Statistics" asp-action="ShowStatistics" method="post" class="form-horizontal">
         <div>Wybierz okres czasu:</div>
         <div class="form-group">
             <div class="col-sm-1">
@@ -51,7 +51,7 @@
                 <label class="control-label">Autor</label>
             </div>
             <div class="col-sm-10">
-                @Html.DropDownListFor(o => o.AuthorId, new SelectList(Model.Authors, "AuthorId", "FullName", Model.Authors.First().AuthorId))
+                @Html.DropDownListFor(o => o.AuthorId, new SelectList(Model.Authors, "AuthorId", "FullName", Model.Authors.FirstOrDefault()?.AuthorId))
 
             </div>
         </div>
@@ -60,11 +60,9 @@
                 <label class="control-label">Dziedzina wiedzy:</label>
             </div>
             <div class="col-sm-10">
-                @Html.DropDownListFor(o=>o.AuthorId, new SelectList(Model.BranchesOfKnowledge, "BranchOfKnowledgeId", "Name", Model.BranchesOfKnowledge.First().BranchOfKnowledgeId))
+                @Html.DropDownListFor(o=>o.AuthorId, new SelectList(Model.BranchesOfKnowledge, "BranchOfKnowledgeId", "Name", Model.BranchesOfKnowledge.FirstOrDefault()?.BranchOfKnowledgeId))
             </div>
         </div>
-
-
     </form>
 </div>
 
