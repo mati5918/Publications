@@ -8,9 +8,10 @@ using Publications.Models;
 namespace Publications.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161212134921_AddRelationBetweenPublicationAndTemplate")]
+    partial class AddRelationBetweenPublicationAndTemplate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -279,13 +280,9 @@ namespace Publications.Data.Migrations
 
                     b.Property<int?>("FieldValueId");
 
-                    b.Property<int?>("PublicationTemplateId");
-
                     b.HasKey("PublicationId");
 
                     b.HasIndex("FieldValueId");
-
-                    b.HasIndex("PublicationTemplateId");
 
                     b.ToTable("Publications");
                 });
@@ -414,10 +411,6 @@ namespace Publications.Data.Migrations
                     b.HasOne("Publications.Models.Entities.FieldValue")
                         .WithMany("Publications")
                         .HasForeignKey("FieldValueId");
-
-                    b.HasOne("Publications.Models.Entities.PublicationTemplate")
-                        .WithMany("Publications")
-                        .HasForeignKey("PublicationTemplateId");
                 });
 
             modelBuilder.Entity("Publications.Models.Entities.PublicationField", b =>

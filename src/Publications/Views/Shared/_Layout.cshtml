@@ -39,12 +39,14 @@
                     <ul class="nav navbar-nav">
                         <li><a asp-area="" asp-controller="Statistics" asp-action="Statistics">Statystyki</a></li>
                     </ul>
-                @if (User.IsInRole("Admin"))
-                {
+                
                     <ul class="nav navbar-nav">
                         <li><a asp-area="" asp-controller="Administration" asp-action="Users">Użytkownicy</a></li>
                     </ul>
-                }
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="" asp-controller="Publication" asp-action="PublicationList">Lista publikacji</a></li>
+                    </ul>
+                
                 
                 @await Html.PartialAsync("_LoginPartial")
             </div>

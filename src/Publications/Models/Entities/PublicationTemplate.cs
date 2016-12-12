@@ -14,6 +14,6 @@ namespace Publications.Models.Entities
         public string Description { get; set; }
 
         public List<FieldTemplate> FieldsTemplates { get; set; }
-
+        public List<Publication> Publications { get; set; }
     }
 }

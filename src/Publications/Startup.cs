@@ -57,6 +57,7 @@ namespace Publications
             services.AddScoped<StatisticsServcie>();
             services.AddScoped<AdminService>();
             services.AddScoped<FieldsProvider>();
+            services.AddScoped<PublicationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

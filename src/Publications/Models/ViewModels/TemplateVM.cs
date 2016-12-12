@@ -23,4 +23,5 @@ namespace Publications.Models.ViewModels
         public string Description { get; set; }
         public List<SaveFieldVM> Fields { get; set; } 
     }
+
 }
