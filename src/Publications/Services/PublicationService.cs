@@ -63,7 +63,22 @@ namespace Publications.Services
         {
             return (from publication in db.Publications where publication.PublicationId == publicationId select publication).ToList()[0].Title;
         }
+        
+        public bool AddPublication(SavePublicationVM savePublication)
+        {
+            try
+            {
+                Publication pub = new Publication() { CreationDate = DateTime.Now, Title = savePublication.Title, TemplateId = savePublication.TemplateId };
+                db.Publications.Add(pub);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
+        }
 
     }
 }

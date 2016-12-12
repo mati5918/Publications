@@ -58,6 +58,7 @@ namespace Publications
             services.AddScoped<AdminService>();
             services.AddScoped<FieldsProvider>();
             services.AddScoped<PublicationService>();
+            services.AddScoped<FieldValueService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

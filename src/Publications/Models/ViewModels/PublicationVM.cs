@@ -13,4 +13,12 @@ namespace Publications.Models.ViewModels
         public string Type { get; set; }
         public DateTime CreationDate { get; set; }
     }
+
+    public class SavePublicationVM
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public int TemplateId { get; set; }
+
+    }
 }
