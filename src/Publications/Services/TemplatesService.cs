@@ -106,5 +106,28 @@ namespace Publications.Services
             }
             return res;
         }
+
+        public int? AddNewField(AddFieldVM vm)
+        {
+            int? res = null;
+            try
+            {
+                PublicationField field = new PublicationField
+                {
+                    Name = vm.Name,
+                    Type = vm.Type
+                };
+                context.PublicationFields.Add(field);
+                context.SaveChanges();
+                res = field.PublicationFieldId;
+            }
+            catch { }
+            return res;
+        }
+
+        public bool isFieldNameValid(AddFieldVM vm)
+        {
+            return !context.PublicationFields.Any(f => f.Type == vm.Type && f.Name.ToLower() == vm.Name.ToLower());
+        }
     }
 }

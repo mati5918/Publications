@@ -47,6 +47,28 @@ namespace Publications.Controllers
         }
 
         [HttpPost]
+        public IActionResult AddNewField([FromBody] AddFieldVM vm)
+        {
+            if (service.isFieldNameValid(vm))
+            {
+                int? newId = service.AddNewField(vm);
+                if (newId.HasValue)
+                {
+                    return PartialView("TemplateRow", new FieldVM() { AttachId = -1, FieldId = newId.Value, Type = vm.Type });
+                }
+                else
+                {
+                    return StatusCode(500, "Wyst¹pi³ b³¹d w zapisie!");
+                }
+            }
+            else
+            {
+                return StatusCode(500, "Istnieje pole o podanej nazwie.");
+            }
+            
+        }
+
+        [HttpPost]
         public IActionResult Save([FromBody] SaveTemplateVM vm)
         {
             bool isSaveSuccess = service.Save(vm);

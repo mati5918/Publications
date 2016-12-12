@@ -18,4 +18,10 @@ namespace Publications.Models.ViewModels
         public int FieldId { get; set; }
         public int AttachId { get; set; }
     }
+
+    public class AddFieldVM
+    {
+        public string Name { get; set; }
+        public FieldType Type { get; set; }
+    }
 }

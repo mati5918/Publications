@@ -1,4 +1,4 @@
-@model Publications.Models.ViewModels.TemplateVM
+﻿@model Publications.Models.ViewModels.TemplateVM
 
 @{
     string title = ViewBag.IsNewTemplate ? "Nowy szablon" : "Edycja szablonu";
@@ -9,7 +9,7 @@
     <div class="col-sm-4">
         <h3>@title</h3>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-8">
         <div class="pull-right">
             <button class="btn btn-primary " id="btnSave" style="margin-top:20px;"><span class="glyphicon glyphicon-save"></span> Zapisz</button>
             <button class="btn btn-danger " style="margin-top:20px;">Anuluj</button>
@@ -18,7 +18,7 @@
 </div>
 <br />
 <div class="row alertContainer" hidden>
-    <div class="alert col-sm-10">
+    <div class="alert col-sm-12">
         <strong id="saveStatus"></strong>
     </div>
 </div>
@@ -50,7 +50,7 @@
 </div>
 <br />
 <div class="row">
-    <div class="alert alert-info col-sm-10">
+    <div class="alert alert-info col-sm-12">
         <span class="glyphicon glyphicon-info-sign"></span><strong> Kazdy szablon zawiera domyslnie takie pola jak nazwa, autorzy, wersja elektroniczna.</strong>
     </div>
 </div>
@@ -58,17 +58,17 @@
     <div class="col-sm-4">
         <h3>Pozostale pola szablonu</h3>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-8">
         <div class="pull-right">
             <button class="btn btn-success" style="width:180px; margin-top:20px;" id="addField"><span class="glyphicon glyphicon-plus"></span> Dodaj istniejace pole</button>
-            <button class="btn btn-info " style="width:180px; margin-top:20px;" data-toggle="modal" data-target="#addModal"><span class="glyphicon glyphicon-plus"> </span> Dodaj nowe pole</button>
+            <button class="btn btn-info " style="width:180px; margin-top:20px;"  id="addNewFieldModal"><span class="glyphicon glyphicon-plus"> </span> Dodaj nowe pole</button>
         </div>
     </div>
 </div>
 <br />
 
 <div class="row fieldsList">
-    <div class="col-sm-10">
+    <div class="col-sm-12">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -92,17 +92,22 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" id="closeModal" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Stworz nowe pole.</h4>
             </div>
             <div class="modal-body">
+                <div class="addFieldAlert" hidden>
+                    <div class="alert">
+                        <strong id="addFieldAlertText"></strong>
+                    </div>
+                </div>
                 <form class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-2">
                             <label class="control-label">Typ:</label>
                         </div>
                         <div class="col-sm-10">
-                            <select class="form-control"><option value="0" selected>Data</option></select>
+                            <select asp-items="Html.GetEnumSelectList<FieldType>()" class="form-control" id="newFieldType"></select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -110,14 +115,14 @@
                             <label class="control-label">Nazwa:</label>
                         </div>
                         <div class="col-sm-10">
-                            <input class="form-control" id="authorInput" maxlength="20" />
+                            <input class="form-control" id="newFieldName" maxlength="20" />
                             <span class="help-block">Pole wymagane. Max 20 znakow.</span>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" id="btnPublish" class="btn btn-success" disabled data-dismiss="modal">Dodaj</button>
+                <button type="button" id="btnAddField" class="btn btn-success">Dodaj</button>
                 <button type="button" class="btn btn-warning" data-dismiss="modal">Anuluj</button>
             </div>
         </div>
@@ -169,7 +174,7 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                console.log(response);
+                //console.log(response);
                 var msg = response.message;
                 if (response.success) {
                     $(".alertContainer .alert").addClass("alert-success");
@@ -177,7 +182,7 @@
 
                 } else {
                     $(".alertContainer .alert").removeClass("alert-success");
-                    $(".alertContainer .alert").addlass("alert-danger");
+                    $(".alertContainer .alert").addClass("alert-danger");
                 }
                 $("#saveStatus").text(msg);
                 $(".alertContainer").show();
@@ -202,6 +207,58 @@
         };
 
         return saveVM;
+
+    }
+
+    $("#btnAddField").click(function () {
+        //$("#addModal").modal('hide');
+        var vm = {
+            Type: $("#newFieldType").val(),
+            Name: $("#newFieldName").val()
+        }
+        $.ajax({
+            url: "@Url.Action("AddNewField")",
+            data: JSON.stringify(vm),
+            contentType: "application/json; charset=utf-8",
+            //dataType: "json",
+            type: "POST",
+            success: function (response) {
+
+                $("tbody").append(response);
+                var newSelect = $($(response)).find(".fieldId");
+                //console.log(newSelect.val());
+                refreshSelects(newSelect, vm.Type);
+                renumerateTableRows();
+                $('#addModal').modal('toggle');
+                //$('#addModal').hide();
+                $('.modal-backdrop').hide();
+            },
+            error: function (response) {
+                $(".addFieldAlert .alert").addClass("alert-danger");
+                $("#addFieldAlertText").text(response.responseText);
+                $(".addFieldAlert").show();
+            }
+        });
+        //return false;
+
+    })
+
+    $("#addNewFieldModal").click(function () {
+        
+        $('#addModal').modal('toggle');
+        $(".addFieldAlert").hide();
+    });
+
+    function refreshSelects(newSelect, newFieldType) {
+        $(".fieldType").each(function (i, v) {
+            var currType = $(v).val();
+            if (currType == newFieldType) {
+                var currValue = $(v).parents("tr").find(".fieldId").val();
+                console.log($(newSelect));
+                $(v).parents("tr").find(".fieldId").replaceWith($(newSelect).clone());
+                $(v).parents("tr").find(".fieldId").val(currValue);
+            }
+        });
 
     }
 </script>

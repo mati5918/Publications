@@ -71,3 +71,12 @@ textarea {
 .removeField:hover{
     cursor:pointer;
 }
+
+.templates-table tbody tr td{
+    padding-right: 30px;
+    text-align: center;
+}
+
+.templates-table th{
+    text-align: center;
+}
