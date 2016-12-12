@@ -13,5 +13,7 @@ namespace Publications.Models.Entities
 
         public List<BranchOfKnowledgePublication> BranchOfKnowledgePublication { get; set; }
         public List<AuthorPublication> AuthorPublication { get; set; }
+        public int TemplateId { get; set; }
+        public PublicationTemplate Template { get; set; }
     }
 }
