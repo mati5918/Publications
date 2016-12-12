@@ -41,10 +41,37 @@ namespace Publications.Services
                     context.PublicationTemplates.Add(templateEntity);
                     context.SaveChanges();
                 }
-                //TODO: modify existing template
+                else
+                {
+                    templateEntity = context.PublicationTemplates.FirstOrDefault(t => t.PublicationTemplateId == vm.TemplateId);
+                    if(templateEntity != null)
+                    {
+                        templateEntity.Name = vm.Name;
+                        templateEntity.Description = vm.Description;
+                        templateEntity.ModifiedDate = DateTime.Now;
+                        context.Entry(templateEntity).State = EntityState.Modified;
+                        context.SaveChanges();
+                    }
+                }
                 if (templateEntity != null)
                 {
                     var newFields = vm.Fields.Where(f => f.AttachId == -1);
+                    var oldFields = vm.Fields.Where(f => f.AttachId != -1);
+                    var fieldsEnitites = context.FieldsTemplates.Where(ft => ft.TemplateId == vm.TemplateId).ToList();
+                    foreach(var field in fieldsEnitites)
+                    {
+                        SaveFieldVM fieldVm = oldFields.FirstOrDefault(f => f.AttachId == field.FieldTemplateId);
+                        if(fieldVm != null)
+                        {
+                            field.FieldId = fieldVm.FieldId;
+                            context.Entry(field).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            context.FieldsTemplates.Remove(field);
+                        }
+                    }
+                    context.SaveChanges();
                     foreach (SaveFieldVM field in newFields) //save new fields
                     {
                         FieldTemplate attachEntity = new FieldTemplate
@@ -54,7 +81,6 @@ namespace Publications.Services
                         };
                         context.FieldsTemplates.Add(attachEntity);
                     }
-                    //TODO: mopdify existing fields
                     context.SaveChanges();
                 }
                 res = true;
