@@ -41,15 +41,8 @@ namespace Publications.Services
         }
         private string GetTypeOfPublication(int publicationId)
         {
-            List<PublicationTemplate> templates = db.PublicationTemplates.ToList();
-            foreach (PublicationTemplate item in templates)
-            {
-                if ((from pub in item.Publications where pub.PublicationId == publicationId select pub).ToList().Count == 1)
-                {
-                    return item.Name;
-                }
-            }
-            return null;
+            List<Publication> publications = (from publication in db.Publications where publication.PublicationId == publicationId select publication).ToList();
+            return publications[0].Template.Name;
         }
         private DateTime GetCreationDateFromPublication(int id)
         {
@@ -68,9 +61,24 @@ namespace Publications.Services
         }
         private string GetTitleOfPublication(int publicationId)
         {
-            return null;
+            return (from publication in db.Publications where publication.PublicationId == publicationId select publication).ToList()[0].Title;
         }
+        
+        public bool AddPublication(SavePublicationVM savePublication)
+        {
+            try
+            {
+                Publication pub = new Publication() { CreationDate = DateTime.Now, Title = savePublication.Title, TemplateId = savePublication.TemplateId };
+                db.Publications.Add(pub);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
+        }
 
     }
 }

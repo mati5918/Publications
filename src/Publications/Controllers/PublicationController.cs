@@ -5,20 +5,40 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Publications.Services;
 using Publications.Models.Entities;
+using Publications.Models.ViewModels;
 
 namespace Publications.Controllers
 {
     public class PublicationController : Controller
     {
-        PublicationService service;
-        public PublicationController(PublicationService service)
+        PublicationService publicationService;
+        public PublicationController(PublicationService publicationService)
         {
-            this.service = service;
+            this.publicationService = publicationService;
         }
         public IActionResult PublicationList()
         {
-            var publicationList = service.GetAllPublications();
+            var publicationList = publicationService.GetAllPublications();
             return View(publicationList);
+        }
+
+        public IActionResult AddPublication()
+        {
+            return View(new SavePublicationVM());
+        }
+        [HttpPost]
+        public IActionResult Add([FromBody] SavePublicationVM savePublication)
+        {
+            bool isDone = publicationService.AddPublication(savePublication);
+            if (isDone)
+            {
+                return Json(new { success = true, message = "Zapisano pomyœlnie!" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Wyst¹pi³ b³¹d w zapisie!" });
+            }
+
         }
     }
 }
