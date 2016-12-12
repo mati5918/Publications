@@ -9,7 +9,11 @@ namespace Publications.Models.Entities
     {
         public int FieldValueId { get; set; }
         public string Value { get; set; }
-        public List<Publication> Publications { get; set; }
-        public List<PublicationField> PublicationFields { get; set; }
+
+        public int PublicationId { get; set; }
+        public Publication Publication { get; set; }
+
+        public int PublicationFeildId { get; set; }
+        public PublicationField PublicationField { get; set; }
     }
 }
