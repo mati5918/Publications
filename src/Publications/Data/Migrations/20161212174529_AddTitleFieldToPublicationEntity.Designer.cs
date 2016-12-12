@@ -8,9 +8,10 @@ using Publications.Models;
 namespace Publications.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161212174529_AddTitleFieldToPublicationEntity")]
+    partial class AddTitleFieldToPublicationEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -263,19 +264,9 @@ namespace Publications.Data.Migrations
                     b.Property<int>("FieldValueId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("PublicationFeildId");
-
-                    b.Property<int?>("PublicationFieldId");
-
-                    b.Property<int>("PublicationId");
-
                     b.Property<string>("Value");
 
                     b.HasKey("FieldValueId");
-
-                    b.HasIndex("PublicationFieldId");
-
-                    b.HasIndex("PublicationId");
 
                     b.ToTable("FieldValues");
                 });
@@ -287,11 +278,15 @@ namespace Publications.Data.Migrations
 
                     b.Property<DateTime>("CreationDate");
 
+                    b.Property<int?>("FieldValueId");
+
                     b.Property<int?>("PublicationTemplateId");
 
                     b.Property<string>("Title");
 
                     b.HasKey("PublicationId");
+
+                    b.HasIndex("FieldValueId");
 
                     b.HasIndex("PublicationTemplateId");
 
@@ -303,11 +298,15 @@ namespace Publications.Data.Migrations
                     b.Property<int>("PublicationFieldId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("FieldValueId");
+
                     b.Property<string>("Name");
 
                     b.Property<int>("Type");
 
                     b.HasKey("PublicationFieldId");
+
+                    b.HasIndex("FieldValueId");
 
                     b.ToTable("PublicationFields");
                 });
@@ -413,23 +412,22 @@ namespace Publications.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Publications.Models.Entities.FieldValue", b =>
-                {
-                    b.HasOne("Publications.Models.Entities.PublicationField", "PublicationField")
-                        .WithMany()
-                        .HasForeignKey("PublicationFieldId");
-
-                    b.HasOne("Publications.Models.Entities.Publication", "Publication")
-                        .WithMany()
-                        .HasForeignKey("PublicationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Publications.Models.Entities.Publication", b =>
                 {
+                    b.HasOne("Publications.Models.Entities.FieldValue")
+                        .WithMany("Publications")
+                        .HasForeignKey("FieldValueId");
+
                     b.HasOne("Publications.Models.Entities.PublicationTemplate")
                         .WithMany("Publications")
                         .HasForeignKey("PublicationTemplateId");
+                });
+
+            modelBuilder.Entity("Publications.Models.Entities.PublicationField", b =>
+                {
+                    b.HasOne("Publications.Models.Entities.FieldValue")
+                        .WithMany("PublicationFields")
+                        .HasForeignKey("FieldValueId");
                 });
         }
     }

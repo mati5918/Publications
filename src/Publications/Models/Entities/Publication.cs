@@ -9,6 +9,7 @@ namespace Publications.Models.Entities
     {
         public int PublicationId { get; set; }
         public DateTime CreationDate { get; set; }
+        public string Title { get; set; }
 
         public List<BranchOfKnowledgePublication> BranchOfKnowledgePublication { get; set; }
         public List<AuthorPublication> AuthorPublication { get; set; }
