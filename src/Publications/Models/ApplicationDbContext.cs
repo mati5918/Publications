@@ -33,5 +33,6 @@ namespace Publications.Models
         public DbSet<BranchOfKnowledgePublication> BranchOfKnowledgePublications { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<AuthorPublication> AuthorPublications { get; set; }
+        public DbSet<FieldValue> FieldValues { get; set; }
     }
 }
