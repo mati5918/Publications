@@ -10,7 +10,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table id="publications">
     <thead>
         <tr>
             <th>
@@ -52,3 +52,9 @@
 }
     </tbody>
 </table>
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script>
+       $(document).ready(function () {
+           $("#publications").DataTable();
+       });
+</script>

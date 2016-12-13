@@ -42,7 +42,7 @@ namespace Publications.Services
         private string GetTypeOfPublication(int publicationId)
         {
             List<Publication> publications = (from publication in db.Publications where publication.PublicationId == publicationId select publication).ToList();
-            return publications[0].Template.Name;
+            return GetPublicationTemplateByTemplateId(publications[0].TemplateId).Name;
         }
         private DateTime GetCreationDateFromPublication(int id)
         {
@@ -58,6 +58,10 @@ namespace Publications.Services
                 authors.Add(GetAuthorById(item.AuthorId));
             }
             return authors;            
+        }
+        private PublicationTemplate GetPublicationTemplateByTemplateId(int id)
+        {
+            return (from temp in db.PublicationTemplates where temp.PublicationTemplateId == id select temp).ToList()[0];
         }
         private string GetTitleOfPublication(int publicationId)
         {
