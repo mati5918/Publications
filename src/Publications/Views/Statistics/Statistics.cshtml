@@ -26,14 +26,16 @@
 
 <div>
     <form asp-controller="Statistics" asp-action="ShowStatistics" method="post" class="form-horizontal">
-        <div>Wybierz okres czasu:</div>
+           
+        <label class="control-label">Wybierz okres czasu:</label>
         <div class="form-group">
+            
             <div class="col-sm-1">
                 <label class="control-label">Start:</label>
             </div>
             <div class="col-sm-10">
-                @Html.EditorFor(model => model.StartOfTimeAmount, new { htmlAttributes = new { @class = "form-control" } })
-                
+                @Html.EditorFor(model => model.StartOfTimeAmount, new {htmlAttributes = new {@class = "form-control"}})
+
             </div>
         </div>
         <div class="form-group">
@@ -61,6 +63,11 @@
             </div>
             <div class="col-sm-10">
                 @Html.DropDownListFor(o=>o.AuthorId, new SelectList(Model.BranchesOfKnowledge, "BranchOfKnowledgeId", "Name", Model.BranchesOfKnowledge.FirstOrDefault()?.BranchOfKnowledgeId))
+            </div>
+        </div> 
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Zatwierdź" class="btn btn-default" />
             </div>
         </div>
     </form>

@@ -1,8 +1,51 @@
-﻿@model Publications.Models.Statistisc.StatisticsViewModel
+@model Publications.Models.Statistisc.StatisticsViewModel
 
 @{
-    ViewBag.Title = "title";
-    Layout = "_Layout";
+    ViewData["Title"] = "ShowStatistics";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>title</h2>
+<h2>ShowStatistics</h2>
+
+<div>
+    <h4>StatisticsViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">      
+        <dt>
+            Okres czasu:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TimeAmount)
+        </dd>
+        @if (!string.IsNullOrEmpty(Model.AuthorName))
+        {
+            <dt>
+                Autor:
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AuthorName)
+            </dd>
+        } 
+        @if (!string.IsNullOrEmpty(Model.KnowledgeBranchName))
+         {
+             <dt>
+                 Dziedzina wiedzy:
+             </dt>
+             <dd>
+                 @Html.DisplayFor(model => model.KnowledgeBranchName)
+             </dd>
+         }
+        <dt>
+            Ilosc publikacji:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PublicationsCount)
+        </dd>
+        <dt>
+            Procent wszystkich:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PercentOfAllPublications)
+        </dd>
+    </dl>
+</div>

@@ -56,6 +56,8 @@ namespace Publications.Services
                         p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledgeId));
 
             var allPublicationsCount = _context.Publications.Count();
+            if (allPublicationsCount == 0)
+                allPublicationsCount = 1;
 
             return new StatisticsViewModel
             {
@@ -78,6 +80,8 @@ namespace Publications.Services
                         p.CreationDate < endOfTimeAmount &&
                         p.AuthorPublication.Any(ap => ap.AuthorId == authorId));
             var allPublicationsCount = _context.Publications.Count();
+            if (allPublicationsCount == 0)
+                allPublicationsCount = 1;
 
             var result = new StatisticsViewModel()
             {
@@ -98,6 +102,8 @@ namespace Publications.Services
             p.CreationDate > startOfTimeAmount &&
             p.CreationDate < endOfTimeAmount);
             var allPublicationsCount = _context.Publications.Count();
+            if (allPublicationsCount == 0)
+                allPublicationsCount = 1;
 
             var result = new StatisticsViewModel()
             {
@@ -124,6 +130,8 @@ namespace Publications.Services
                         p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledgeId));
 
             var allPublicationsCount = _context.Publications.Count();
+            if (allPublicationsCount == 0)
+                allPublicationsCount = 1;
 
             var result = new StatisticsViewModel()
             {
