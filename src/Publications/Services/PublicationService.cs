@@ -67,12 +67,33 @@ namespace Publications.Services
         {
             return (from publication in db.Publications where publication.PublicationId == publicationId select publication).ToList()[0].Title;
         }
-        
+
+        private PublicationField findFieldByName(string name)
+        {
+            foreach (PublicationField item in db.PublicationFields)
+            {
+                if (item.Name.Equals(name))
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+        public  IEnumerable<PublicationTemplate> GetAllPublicationTemplate()
+        {
+            return db.PublicationTemplates;
+        }
         public bool AddPublication(SavePublicationVM savePublication)
         {
             try
             {
                 Publication pub = new Publication() { CreationDate = DateTime.Now, Title = savePublication.Title, TemplateId = savePublication.TemplateId };
+                List<FieldValue> filedsValue = new List<FieldValue>();
+                foreach (FieldValueVM item in savePublication.FieldsValue)
+                {
+                    PublicationField publicationField = findFieldByName(item.Name);
+                    db.FieldValues.Add(new FieldValue() { Publication = pub, Value = item.Value, PublicationField = publicationField });
+                }
                 db.Publications.Add(pub);
                 db.SaveChanges();
                 return true;

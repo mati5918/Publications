@@ -4,7 +4,6 @@
     ViewData["Title"] = "AddPublication";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <h2>AddPublication</h2>
 
 <form asp-action="AddPublication">
@@ -12,24 +11,21 @@
         <h4>SavePublicationVM</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        
         <div class="form-group">
             <label asp-for="Title" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Title" id="title" class="form-control" />
+                <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
             <label asp-for="TemplateId" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="TemplateId" id="templateId" class="form-control" />
-                <span asp-validation-for="TemplateId" class="text-danger" />
+            <div class="col-md-10" id="TemplateList">
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" id="btnCreate" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </div>
     </div>
@@ -38,31 +34,18 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+<script type="text/javascript">
+$(document).ready(function () {
+            $.ajax({
+            url: "@Url.Action("ShowTemplatesList")",
+            type: "GET",
+            success: function (response) {
+            $("#TemplateList").html(response);
+            }
+            });
+})
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-<script type="text/javascript">
-           $("#btnCreate").click(function () {
-        var data = Data();
-        $.ajax({
-            url: "@Url.Action("Add")",
-            type: "POST",
-            data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function () {
-                alert("Success!!!");
-            }
-            });
-           });
-
-    function Data() {
-        var publication = {
-            TemplateId: $("#templateId").val(),
-            Title: $("#title").val()
-
-        }
-        return publication;
-    }
-    </script>

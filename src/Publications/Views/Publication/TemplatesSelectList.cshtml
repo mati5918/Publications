@@ -1,0 +1,12 @@
+@model IEnumerable<Publications.Models.Entities.PublicationTemplate>
+
+@{
+    var templates = new List<SelectListItem>();
+    foreach (Publications.Models.Entities.PublicationTemplate item in Model)
+    {
+        templates.Add(new SelectListItem() { Value = item.PublicationTemplateId.ToString(), Text = item.Name });
+    }
+}
+
+<select asp-items="templates" onselect="TemplateSelect" class="form-control" id="PublicationTemplate"></select>
+

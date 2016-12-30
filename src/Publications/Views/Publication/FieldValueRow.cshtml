@@ -1,0 +1,50 @@
+@model Publications.Models.ViewModels.FieldValueVM
+@{ var type = Model.FieldType;
+}
+
+@if (type == FieldType.String)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => Model.Name);
+        </td>
+        <td class="fieldsSelect"><input class="form-control" style="width:300px;" id="Value" /></td>
+    </tr>
+            else if (type == FieldType.Textarea)
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => Model.Name);
+            </td>
+            <td class="fieldsSelect"><textarea class="form-control" style="width:300px;" id="Value" rows="4"></textarea></td>
+        </tr>
+    else if (type == FieldType.Number)
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => Model.Name);
+            </td>
+            <td class="fieldsSelect"><input class="form-control" style="width:300px;" id="Value" /></td>
+        </tr>
+    else if (type == FieldType.DateTime)
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => Model.Name);
+            </td>
+            <td class="fieldsSelect"><input type="datetime" id="Value" class="form-control" /></td>
+        </tr>
+    else if (type == FieldType.Boolean)
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => Model.Name);
+            </td>
+            <td class="fieldsSelect"><input type="checkbox" id="Value" class="form-control" /></td>
+        </tr>
+    else if (type == FieldType.File)
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => Model.Name);
+            </td>
+            <td class="fieldsSelect"><input type="file" id="Value" class="form-control" /></td>
+        </tr>
+}
+
+

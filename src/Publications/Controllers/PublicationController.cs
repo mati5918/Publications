@@ -21,10 +21,13 @@ namespace Publications.Controllers
             var publicationList = publicationService.GetAllPublications();
             return View(publicationList);
         }
-
         public IActionResult AddPublication()
         {
             return View(new SavePublicationVM());
+        }
+        public IActionResult ShowTemplatesList()
+        {
+            return PartialView("TemplatesSelectList", publicationService.GetAllPublicationTemplate());
         }
         [HttpPost]
         public IActionResult Add([FromBody] SavePublicationVM savePublication)
