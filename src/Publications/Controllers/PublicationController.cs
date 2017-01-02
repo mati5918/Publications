@@ -27,6 +27,11 @@ namespace Publications.Controllers
             PublicationVM publicationVM = publicationService.ParsePublicationToPublicationVM(publication);
             return View(publicationVM);
         }
+        public IActionResult FieldValueRow()
+        {
+            IEnumerable<FieldValueVM> fieldValues = publicationService.GenerateNewFieldValue(2);
+            return PartialView("FieldValueRow", fieldValues);
+        }
         public IActionResult AddPublication()
         {
             return View(new SavePublicationVM());
