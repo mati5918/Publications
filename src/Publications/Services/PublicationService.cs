@@ -16,7 +16,17 @@ namespace Publications.Services
         {
             db = context;
         }
-        
+        public Publication GetPublicationById(int? id)
+        {
+            try
+            {
+                return (from p in db.Publications where p.PublicationId == id select p).ToList()[0];
+            }
+            catch
+            {
+                return null;
+            }
+        }
         public IEnumerable<PublicationVM> GetAllPublications()
         {
             List<Publication> publications = db.Publications.ToList();
@@ -67,7 +77,24 @@ namespace Publications.Services
         {
             return (from publication in db.Publications where publication.PublicationId == publicationId select publication).ToList()[0].Title;
         }
-
+        private IEnumerable<FieldValueVM> GetFieldValueVMFromPublication(Publication publication)
+        {
+            int id = publication.PublicationId;
+            List<FieldValue> fieldValue = (from fv in db.FieldValues join p in db.Publications on fv.PublicationId equals p.PublicationId where p.PublicationId == id select fv).ToList();
+            return null;
+        }
+        private string GetTypeOfPublication(Publication publication)
+        {
+            List<PublicationTemplate> pt = (from t in db.PublicationTemplates where t.PublicationTemplateId == publication.TemplateId select t).ToList();
+            if (pt.Count == 0)
+            {
+                return "";
+            }
+            else
+            {
+                return pt[0].Name;
+            }
+        }
         private PublicationField findFieldByName(string name)
         {
             foreach (PublicationField item in db.PublicationFields)
@@ -102,7 +129,17 @@ namespace Publications.Services
             {
                 return false;
             }
-
+        }
+        public PublicationVM ParsePublicationToPublicationVM(Publication publication)
+        {
+            if (publication != null)
+            {
+                return new PublicationVM() { Id = publication.PublicationId, Title = publication.Title, Type = GetTypeOfPublication(publication), CreationDate = publication.CreationDate, FieldValues = new List<FieldValueVM>() };
+            }
+            else
+            {
+                return new PublicationVM();
+            }
         }
 
     }

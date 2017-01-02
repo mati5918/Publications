@@ -12,6 +12,7 @@ namespace Publications.Models.ViewModels
         public List<string> Authors { get; set; }
         public string Type { get; set; }
         public DateTime CreationDate { get; set; }
+        public List<FieldValueVM> FieldValues { get; set; }
     }
 
     public class SavePublicationVM

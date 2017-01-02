@@ -6,11 +6,10 @@
 }
 
 <h2>PublicationList</h2>
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table id="publications">
+<table id="publications" class="table">
     <thead>
         <tr>
             <th>
@@ -44,15 +43,13 @@
                 @Html.DisplayFor(modelItem => item.CreationDate)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                <a asp-action="Details" asp-route-publicationId="@item.Id" data-toggle="tooltip" data-placement="top" title="Szczegó?y"><span class="glyphicon glyphicon-edit glyph-button"></span></a>&nbsp;&nbsp;
             </td>
         </tr>
 }
     </tbody>
 </table>
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+@*<script src="~/lib/datatable/datatables.min.js"></script>*@
 <script>
        $(document).ready(function () {
            $("#publications").DataTable();

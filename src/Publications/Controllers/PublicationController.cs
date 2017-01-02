@@ -21,6 +21,12 @@ namespace Publications.Controllers
             var publicationList = publicationService.GetAllPublications();
             return View(publicationList);
         }
+        public IActionResult Details(int? publicationId)
+        {
+            Publication publication = publicationService.GetPublicationById(publicationId);
+            PublicationVM publicationVM = publicationService.ParsePublicationToPublicationVM(publication);
+            return View(publicationVM);
+        }
         public IActionResult AddPublication()
         {
             return View(new SavePublicationVM());
