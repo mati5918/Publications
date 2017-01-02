@@ -16,13 +16,14 @@
         $.ajax({
             url: "@Url.Action("FieldValueRow")",
             type: "GET",
-            success: function (response) {
-            $("#FieldValueList").html(response);
+            data: {
+                templateId: PublicationTemplate.value
             },
-            error: function () {
-                alert("nope!");
-
+            success: function (response) {
+                $("#FieldValueList").html(response);
+            },
+            error: function() {            
             }
-    });
-})
+        })
+        });
 </script>
