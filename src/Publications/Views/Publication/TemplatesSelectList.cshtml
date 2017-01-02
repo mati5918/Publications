@@ -9,20 +9,4 @@
 }
 
 <select asp-items="templates" onselect="TemplateSelect" class="form-control" id="PublicationTemplate"></select>
-<div class="col-md-10" id="FieldValueList">
-</div>
-<script type="text/javascript">
-    $("#PublicationTemplate").change(function () {
-        $.ajax({
-            url: "@Url.Action("FieldValueRow")",
-            type: "GET",
-            success: function (response) {
-            $("#FieldValueList").html(response);
-            },
-            error: function () {
-                alert("nope!");
 
-            }
-    });
-})
-</script>

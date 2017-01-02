@@ -186,15 +186,5 @@ namespace Publications.Services
             }
             return temp;
         }
-        public List<FieldValueVM> GenerateNewFieldValue(int? templateId)
-        {
-            List<FieldValueVM> temp = new List<FieldValueVM>();
-            List<PublicationField> fields = (from t in db.PublicationTemplates join tf in db.FieldsTemplates on t.PublicationTemplateId equals tf.TemplateId join f in db.PublicationFields on tf.FieldId equals f.PublicationFieldId where t.PublicationTemplateId == templateId select f).ToList();
-            foreach (PublicationField item in fields)
-            {
-                temp.Add(new FieldValueVM() { FieldType = item.Type, Name = item.Name, Value = "" });
-            }
-            return temp;
-        }
     }
 }
