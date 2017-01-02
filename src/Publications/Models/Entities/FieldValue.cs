@@ -14,6 +14,7 @@ namespace Publications.Models.Entities
         public Publication Publication { get; set; }
 
         public int PublicationFeildId { get; set; }
+        public int PublicationFieldId { get; set; }
         public PublicationField PublicationField { get; set; }
     }
 }

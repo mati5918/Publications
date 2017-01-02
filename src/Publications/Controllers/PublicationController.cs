@@ -27,6 +27,14 @@ namespace Publications.Controllers
             PublicationVM publicationVM = publicationService.ParsePublicationToPublicationVM(publication);
             return View(publicationVM);
         }
+<<<<<<< HEAD
+=======
+        public IActionResult FieldValueRow(int templateId)
+        {
+            IEnumerable<FieldValueVM> fieldValues = publicationService.GenerateNewFieldValue(templateId);
+            return PartialView(fieldValues);
+        }
+>>>>>>> notwork
         public IActionResult AddPublication()
         {
             return View(new SavePublicationVM());
@@ -36,7 +44,7 @@ namespace Publications.Controllers
             return PartialView("TemplatesSelectList", publicationService.GetAllPublicationTemplate());
         }
         [HttpPost]
-        public IActionResult Add([FromBody] SavePublicationVM savePublication)
+        public IActionResult Add(SavePublicationVM savePublication)
         {
             bool isDone = publicationService.AddPublication(savePublication);
             if (isDone)

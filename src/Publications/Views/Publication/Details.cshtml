@@ -1,15 +1,22 @@
 @model Publications.Models.ViewModels.PublicationVM
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Szczegó?y";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<h2>Szczegó?y</h2>
 
 <div>
-    <h4>PublicationVM</h4>
+    <h4>@Html.DisplayFor(model => model.Title)</h4>
     <hr />
+    <h8>Autorzy:</h8>
+    <ul>
+        @foreach (var item in Model.Authors)
+        {
+            <li>@item</li>
+        }
+    </ul>
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Id)
@@ -28,6 +35,15 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BrachesOfKnowledge)
+        </dt>
+        <dd>
+            @foreach (var item in Model.BrachesOfKnowledge)
+            {
+                @(item + " ")
+            }
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.CreationDate)
@@ -53,6 +69,5 @@
 
 </table>
 <div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="PublicationList">Back to List</a>
 </div>

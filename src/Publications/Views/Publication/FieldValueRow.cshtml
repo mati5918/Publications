@@ -46,5 +46,126 @@
             <td class="fieldsSelect"><input type="file" id="Value" class="form-control" /></td>
         </tr>
 }
+=======
+@model IEnumerable<Publications.Models.ViewModels.FieldValueVM>
+<table id="publications" class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+              Type
+            </th>
+            <th>
+                Value
+            </th>
+        </tr>
+    </thead>
+    @foreach (Publications.Models.ViewModels.FieldValueVM item in Model)
+    {
+        @switch (item.FieldType)
+        {
+            case FieldType.String:
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.FieldType
+                    </td>
+                    <td>
+                        <input class="form-control" width="40"/>
+                    </td>
+                </tr>
+                break;
+            case FieldType.Textarea:
+                <tbody>
+                    <tr>
+                        <td>
+                            @item.Name
+                        </td>
+                        <td>
+                            @item.FieldType
+                        </td>
+                        <td>
+                            <textarea data-bind="item.Value" class="form-control"></textarea>
+                        </td>
+                    </tr>
+                </tbody>
+                break;
+            case FieldType.Number:
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.FieldType
+                    </td>
+                    <td>
+                        <input class="form-control" width="40"/>
+                    </td>
+                </tr>
+                break;
+            case FieldType.DateTime:
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.FieldType
+                    </td>
+                    <td>
+                        <input type="date" class="form-control" />
+                    </td>
+                </tr>
+                break;
+            case FieldType.Boolean:
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.FieldType
+                    </td>
+                    <td>
+                        <input type="checkbox" class="form-control" width="10" height="10"/>
+                    </td>
+                </tr>
+                break;
+            case FieldType.File:
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.FieldType
+                    </td>
+                    <td>
+                        <input type="file" class="form-control" />
+                    </td>
+                </tr>
+                break;
+            default:
+                break;
+        }
+        @*<tbody>
+            <tr>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.FieldType
+                </td>
+                <td>
+                    <textarea data-bind="item.Value" class="form-control"></textarea>
+                </td>
+            </tr>
+        </tbody>*@
+    }
+</table>
+
+
+>>>>>>> notwork
 
 
