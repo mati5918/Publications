@@ -27,14 +27,14 @@ namespace Publications.Controllers
             PublicationVM publicationVM = publicationService.ParsePublicationToPublicationVM(publication);
             return View(publicationVM);
         }
-<<<<<<< HEAD
-=======
-        public IActionResult FieldValueRow(int templateId)
-        {
-            IEnumerable<FieldValueVM> fieldValues = publicationService.GenerateNewFieldValue(templateId);
-            return PartialView(fieldValues);
-        }
->>>>>>> notwork
+
+        //public IActionResult FieldValueRow(int templateId)
+        //{
+        //    IEnumerable<FieldValueVM> fieldValues = publicationService.GenerateNewFieldValue(templateId);
+        //    return PartialView(fieldValues);
+        //} 
+        // zakomentowalem bo nie mog³em odpalic projektu
+
         public IActionResult AddPublication()
         {
             return View(new SavePublicationVM());

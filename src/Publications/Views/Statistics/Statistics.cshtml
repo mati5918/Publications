@@ -65,7 +65,11 @@
                 @Html.DropDownListFor(o=>o.AuthorId, new SelectList(Model.BranchesOfKnowledge, "BranchOfKnowledgeId", "Name", Model.BranchesOfKnowledge.FirstOrDefault()?.BranchOfKnowledgeId))
             </div>
         </div> 
-
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Zatwierdź" class="btn btn-default" id="Createbtn" />
+            </div>
+        </div>
     </form>
 </div>
 
