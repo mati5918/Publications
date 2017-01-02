@@ -1,14 +1,13 @@
 @model Publications.Models.Statistisc.StatisticsViewModel
 
 @{
-    ViewData["Title"] = "ShowStatistics";
+    ViewData["Title"] = "Statystyki";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>ShowStatistics</h2>
+<h2>Statystyki</h2>
 
 <div>
-    <h4>StatisticsViewModel</h4>
     <hr />
     <dl class="dl-horizontal">      
         <dt>
@@ -47,5 +46,25 @@
         <dd>
             @Html.DisplayFor(model => model.PercentOfAllPublications)
         </dd>
-    </dl>
+         <dt>
+            Publikacje/galaz wiedzy:
+        </dt>
+        <dd>
+            @Html.Partial("_DictionaryWithIntegerKeyDisplay", Model.PublicationsPerKonwledgeBranch)
+        </dd>   
+        
+        <dt>
+            % publikacji na galaz wiedzy:
+        </dt>
+        <dd>
+            @Html.Partial("_DictionaryDisplay", Model.PercentOfPublicationsPerKonwledgeBranch)
+        </dd>   
+
+    </dl>  
+    
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="submit" value="ZatwierdŸ" class="btn btn-default" />
+        </div>
+    </div>
 </div>

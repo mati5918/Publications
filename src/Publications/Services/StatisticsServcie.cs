@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Publications.Models;
 using Publications.Models.Entities;
 using Publications.Models.Statistisc;
@@ -168,6 +169,11 @@ namespace Publications.Services
                 result.Add(branchOfKnowledge.Name, 100* publications.Count(p => p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId))/ (double)_context.Publications.Count(p => p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)));
             }
             return result;
+        }
+
+        public string GenerateReport(StatisticsViewModel statistics, string fileType)
+        {
+            return "";
         }
     }
 }

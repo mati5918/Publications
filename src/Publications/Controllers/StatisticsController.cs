@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Publications.Models.Statistisc;
-using Publications.Models;
 using Publications.Services;
 
 namespace Publications.Controllers
@@ -34,6 +29,16 @@ namespace Publications.Controllers
         {
             var statistics = _service.GetStatistics(filter);
             return View(statistics);
+        }
+
+        public IActionResult GenerateReport(StatisticsViewModel statistics, string fileType)
+        {
+            var filepath=_service.GenerateReport(statistics, fileType);
+          
+            byte[] filedata = System.IO.File.ReadAllBytes(filepath);
+
+
+            return File(filedata, "application/x-msdownload", filepath);
         }
     }
 }

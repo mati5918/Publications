@@ -1,0 +1,16 @@
+﻿@model Dictionary<string, int>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>Dziedzina wiedzy</thead>
+        <thead>Wartość</thead>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Key</td>
+                <td>@item.Value</td>
+            </tr>
+        }
+    </table>
+}
