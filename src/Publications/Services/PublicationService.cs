@@ -4,6 +4,7 @@ using Publications.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Publications.Services
@@ -48,6 +49,40 @@ namespace Publications.Services
         {
             List<Author> authors = (from author in db.Authors where author.AuthorId == id select author).ToList();
             return authors[0].FirstName + " " + authors[0].SecondName;
+        }
+        private IEnumerable<string> GetAuthorsOfPublication(int? publicationId)
+        {
+            List<string> temp = new List<string>();
+            List<Author> authors = (from p in db.Publications join pa in db.AuthorPublications on p.PublicationId equals pa.PublicationId join a in db.Authors on pa.AuthorId equals a.AuthorId where p.PublicationId == publicationId select a).ToList();
+            foreach (Author item in authors)
+            {
+                StringBuilder author = new StringBuilder();
+                author.Append(item.AcademicDegree.ToString());
+                author.Append(" ");
+                author.Append(item.FirstName);
+                author.Append(" ");
+                author.Append(item.SecondName);
+                temp.Add(author.ToString());
+            }
+            return temp;
+        }
+        private List<FieldValueVM> GetFieldValueInPublication(int? publicationId)
+        {
+            List<FieldValue> FieldValues = (from p in db.Publications join fv in db.FieldValues on p.PublicationId equals fv.PublicationId where p.PublicationId == publicationId select fv).ToList();
+            List<FieldValueVM> temp = new List<FieldValueVM>();
+            foreach (FieldValue item in FieldValues)
+            {
+                temp.Add(new FieldValueVM() { Value = item.Value, Name = GetNameOfFieldValue(item), FieldType = GetTypeOfFieldValue(item), FieldId = item.FieldValueId });
+            }
+            return temp;
+        }
+        private string GetNameOfFieldValue(FieldValue fieldValue)
+        {
+            return (from fv in db.FieldValues join f in db.PublicationFields on fv.PublicationFeildId equals f.PublicationFieldId where fv.FieldValueId == fieldValue.FieldValueId select f).ToList()[0].Name;
+        }
+        private FieldType GetTypeOfFieldValue(FieldValue fieldValue)
+        {
+            return (from fv in db.FieldValues join f in db.PublicationFields on fv.PublicationFieldId equals f.PublicationFieldId where fv.FieldValueId == fieldValue.FieldValueId select f).ToList()[0].Type;
         }
         private string GetTypeOfPublication(int publicationId)
         {
@@ -134,13 +169,22 @@ namespace Publications.Services
         {
             if (publication != null)
             {
-                return new PublicationVM() { Id = publication.PublicationId, Title = publication.Title, Type = GetTypeOfPublication(publication), CreationDate = publication.CreationDate, FieldValues = new List<FieldValueVM>() };
+                return new PublicationVM() { Id = publication.PublicationId, Title = publication.Title, Type = GetTypeOfPublication(publication), CreationDate = publication.CreationDate, FieldValues = GetFieldValueInPublication(publication.PublicationId), Authors = GetAuthorsOfPublication(publication.PublicationId) as List<string>, BrachesOfKnowledge = GetBranchesFromPublication(publication.PublicationId) };
             }
             else
             {
                 return new PublicationVM();
             }
         }
-
+        private List<string> GetBranchesFromPublication(int? publicationId)
+        {
+            List<string> temp = new List<string>();
+            List<BranchOfKnowledge> branches = (from b in db.BranchOfKnowledges join bp in db.BranchOfKnowledgePublications on b.BranchOfKnowledgeId equals bp.BranchOfKnowledgeId join p in db.Publications on bp.PublicationId equals p.PublicationId where p.PublicationId == publicationId select b).ToList();
+            foreach (BranchOfKnowledge item in branches)
+            {
+                temp.Add(item.Name);
+            }
+            return temp;
+        }
     }
 }

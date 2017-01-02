@@ -10,6 +10,7 @@ namespace Publications.Models.ViewModels
         public int Id { get; set; }
         public string Title { get; set; }
         public List<string> Authors { get; set; }
+        public List<string> BrachesOfKnowledge { get; set; }
         public string Type { get; set; }
         public DateTime CreationDate { get; set; }
         public List<FieldValueVM> FieldValues { get; set; }
