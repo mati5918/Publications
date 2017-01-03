@@ -1,25 +1,25 @@
-@model IEnumerable<Publications.Models.ViewModels.UserListVM>
+﻿@model IEnumerable<Publications.Models.ViewModels.UserListVM>
 
 @{
     ViewData["Title"] = "Users";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>U?ytkownicy</h2>
+<h2>Użytkownicy</h2>
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 
-<table class="table" id="userTable">
+<table class="table templates-table table-striped" id="userTable">
     <thead>
         <tr>
 
-            <th class="text-center">
+            <th>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
 
-            <th class="text-center">
+            <th>
                 @Html.DisplayNameFor(model => model.isAdmin)
             </th>
-            <th></th>
+            <th class="nosort"></th>
         </tr>
     </thead>
     <tbody>
@@ -27,11 +27,11 @@
         {
             <tr>
 
-                <td class="text-center">
+                <td>
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
 
-                <td class="text-center">
+                <td>
                     @Html.DisplayFor(modelItem => item.isAdmin)
                 </td>
                 <td>
@@ -41,29 +41,62 @@
                     }
                     else
                     {
-                        <button id="addAdminBtn" data-id="@item.Id" class="btn btn-info">Daj admina</button>
+                        <button data-id="@item.Id" class="btn btn-info addAdminBtn">Daj admina</button>
                     }
-                    <button id="removeUserBtn" data-id="@item.Id" class="btn btn-danger">Usun uzytkowniaka</button>
+                    <button data-id="@item.Id" class="btn btn-danger removeUserBtn">Usun uzytkowniaka</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
+<style>
+    .even{
+        background-color:black !important
+    }
+</style>
 @section scripts{
     
-    <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-   <script>
+   @* <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>*@
+   <script type="text/javascript">
        $(document).ready(function () {
-           $("#userTable").DataTable();
+          
+
+           $("#userTable").DataTable({
+               language: {
+                   "processing": "Przetwarzanie...",
+                   "search": "Szukaj:",
+                   "lengthMenu": "Pokaż _MENU_ pozycji",
+                   "info": "Pozycje od _START_ do _END_ z _TOTAL_ łącznie",
+                   "infoEmpty": "Pozycji 0 z 0 dostępnych",
+                   "infoFiltered": "(filtrowanie spośród _MAX_ dostępnych pozycji)",
+                   "infoPostFix": "",
+                   "loadingRecords": "Wczytywanie...",
+                   "zeroRecords": "Nie znaleziono pasujących pozycji",
+                   "emptyTable": "Brak danych",
+                   "paginate": {
+                       "first": "Pierwsza",
+                       "previous": "Poprzednia",
+                       "next": "Następna",
+                       "last": "Ostatnia"
+                   },
+                   "aria": {
+                       "sortAscending": ": aktywuj, by posortować kolumnę rosnąco",
+                       "sortDescending": ": aktywuj, by posortować kolumnę malejąco"
+                   }
+               },
+               aoColumnDefs: [{
+                   'bSortable': false,
+                   'aTargets': ['nosort']
+               }]
+           });
        });
     </script>
 
     <script>
-        $("#addAdminBtn").click(function () {
+        $(".addAdminBtn").click(function () {
             userId = $(this).attr("data-id");
             bootbox.confirm({
-                message: "Czy na pewno chcesz da? temu u?ytkownikowi administratora?",
+                message: "Czy na pewno chcesz dać temu użytkownikowi administratora?",
                 buttons: {
                     confirm: {
                         label: 'Tak',
@@ -82,10 +115,10 @@
             });
         });
 
-        $("#removeUserBtn").click(function () {
+        $(".removeUserBtn").click(function () {
             userId = $(this).attr("data-id");
             bootbox.confirm({
-                message: "Czy na pewno chcesz usun?? tego u?ytkownika?",
+                message: "Czy na pewno chcesz usunąć tego użytkownika?",
                 buttons: {
                     confirm: {
                         label: 'Tak',

@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Publications.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
         private AdminService _service;
