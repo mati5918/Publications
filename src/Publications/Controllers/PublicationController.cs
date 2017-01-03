@@ -28,12 +28,12 @@ namespace Publications.Controllers
             return View(publicationVM);
         }
 
-        //public IActionResult FieldValueRow(int templateId)
-        //{
-        //    IEnumerable<FieldValueVM> fieldValues = publicationService.GenerateNewFieldValue(templateId);
-        //    return PartialView(fieldValues);
-        //} 
-        // zakomentowalem bo nie mog³em odpalic projektu
+        public IActionResult FieldValueRow(int templateId)
+        {
+            IEnumerable<FieldValueVM> fieldValues = publicationService.GenerateNewFieldValue(templateId);
+            return PartialView(fieldValues);
+        }
+
 
         public IActionResult AddPublication()
         {

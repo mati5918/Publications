@@ -1,52 +1,3 @@
-@model Publications.Models.ViewModels.FieldValueVM
-@{ var type = Model.FieldType;
-}
-
-@if (type == FieldType.String)
-{
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => Model.Name);
-        </td>
-        <td class="fieldsSelect"><input class="form-control" style="width:300px;" id="Value" /></td>
-    </tr>
-            else if (type == FieldType.Textarea)
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => Model.Name);
-            </td>
-            <td class="fieldsSelect"><textarea class="form-control" style="width:300px;" id="Value" rows="4"></textarea></td>
-        </tr>
-    else if (type == FieldType.Number)
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => Model.Name);
-            </td>
-            <td class="fieldsSelect"><input class="form-control" style="width:300px;" id="Value" /></td>
-        </tr>
-    else if (type == FieldType.DateTime)
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => Model.Name);
-            </td>
-            <td class="fieldsSelect"><input type="datetime" id="Value" class="form-control" /></td>
-        </tr>
-    else if (type == FieldType.Boolean)
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => Model.Name);
-            </td>
-            <td class="fieldsSelect"><input type="checkbox" id="Value" class="form-control" /></td>
-        </tr>
-    else if (type == FieldType.File)
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => Model.Name);
-            </td>
-            <td class="fieldsSelect"><input type="file" id="Value" class="form-control" /></td>
-        </tr>
-}
-=======
 @model IEnumerable<Publications.Models.ViewModels.FieldValueVM>
 <table id="publications" class="table">
     <thead>
@@ -55,7 +6,7 @@
                 Name
             </th>
             <th>
-              Type
+                Type
             </th>
             <th>
                 Value
@@ -75,7 +26,7 @@
                         @item.FieldType
                     </td>
                     <td>
-                        <input class="form-control" width="40"/>
+                        <input class="form-control" width="40" />
                     </td>
                 </tr>
                 break;
@@ -103,7 +54,7 @@
                         @item.FieldType
                     </td>
                     <td>
-                        <input class="form-control" width="40"/>
+                        <input class="form-control" width="40" />
                     </td>
                 </tr>
                 break;
@@ -129,7 +80,7 @@
                         @item.FieldType
                     </td>
                     <td>
-                        <input type="checkbox" class="form-control" width="10" height="10"/>
+                        <input type="checkbox" class="form-control" width="10" height="10" />
                     </td>
                 </tr>
                 break;
@@ -150,22 +101,17 @@
                 break;
         }
         @*<tbody>
-            <tr>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.FieldType
-                </td>
-                <td>
-                    <textarea data-bind="item.Value" class="form-control"></textarea>
-                </td>
-            </tr>
-        </tbody>*@
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.FieldType
+                    </td>
+                    <td>
+                        <textarea data-bind="item.Value" class="form-control"></textarea>
+                    </td>
+                </tr>
+            </tbody>*@
     }
 </table>
-
-
->>>>>>> notwork
-
-
