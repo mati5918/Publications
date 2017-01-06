@@ -6,10 +6,12 @@
     <title>@ViewData["Title"] - Publications</title>
 
     <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>  
+    <script src="~/js/site.js" asp-append-version="true"></script>  
+    
 
     <environment names="Development">
+        <link href="~/lib/select2/select2.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="~/lib/datatable/datatables.css" />
         <link rel="stylesheet" href="https://bootswatch.com/cyborg/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -73,6 +75,8 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/lib/bootbox/bootbox.js"></script>
         <script src="~/lib/datatable/datatables.min.js"></script>
+        <script src="~/lib/select2/select2.min.js"></script>
+        <script src="~/lib/select2/i18n/pl.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">

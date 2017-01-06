@@ -26,7 +26,7 @@ namespace Publications.Controllers
         public IActionResult Add()
         {
             ViewBag.IsNewTemplate = true;
-            return View("Details", new TemplateVM {TemplateId = -1 });
+            return View("Details", new TemplateVM { TemplateId = -1, IsActive = true });
         }
 
         public IActionResult AddField()
@@ -74,7 +74,7 @@ namespace Publications.Controllers
             bool isSaveSuccess = service.Save(vm);
             if (isSaveSuccess)
             {
-                return Json(new { success = true, message = "Zapisano pomyœlnie!"});
+                return Json(new { success = true, message = "Zapisano pomyœlnie!", id = vm.TemplateId});
             }
             else
             {

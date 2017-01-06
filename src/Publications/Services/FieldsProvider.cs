@@ -19,7 +19,8 @@ namespace Publications.Services
         public List<SelectListItem> GetFieldsByType(FieldType type)
         {
             return context.PublicationFields.Where(f => f.Type == type)
-                .Select(f => new SelectListItem { Text = f.Name, Value = f.PublicationFieldId.ToString() })
+                .OrderBy(f => f.Name)
+                .Select(f => new SelectListItem { Text = f.Name, Value = f.PublicationFieldId.ToString() })             
                 .ToList();
         }
     }

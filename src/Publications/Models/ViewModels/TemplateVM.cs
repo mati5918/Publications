@@ -23,6 +23,7 @@ namespace Publications.Models.ViewModels
         public int TemplateId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public bool IsActive { get; set; }
         public List<SaveFieldVM> Fields { get; set; } 
     }
 

@@ -41,6 +41,13 @@ namespace Publications.Models
 
                     context.SaveChanges();
                 }
+                else
+                {
+                    //context.PublicationFields.RemoveRange(context.PublicationFields);
+                    //context.SaveChanges();
+                }
+                //context.PublicationTemplates.RemoveRange(context.PublicationTemplates);
+                //context.SaveChanges();
             }
         }
     }

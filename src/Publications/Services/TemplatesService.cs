@@ -36,7 +36,8 @@ namespace Publications.Services
                         CreationDate = DateTime.Now,
                         ModifiedDate = DateTime.Now,
                         Name = vm.Name,
-                        Description = vm.Description
+                        Description = vm.Description,
+                        IsActive = vm.IsActive
                     };
                     context.PublicationTemplates.Add(templateEntity);
                     context.SaveChanges();
@@ -47,6 +48,7 @@ namespace Publications.Services
                     if(templateEntity != null)
                     {
                         templateEntity.Name = vm.Name;
+                        templateEntity.IsActive = vm.IsActive;
                         templateEntity.Description = vm.Description;
                         templateEntity.ModifiedDate = DateTime.Now;
                         context.Entry(templateEntity).State = EntityState.Modified;
@@ -83,6 +85,7 @@ namespace Publications.Services
                     }
                     context.SaveChanges();
                 }
+                vm.TemplateId = templateEntity.PublicationTemplateId;
                 res = true;
             }
             catch { }

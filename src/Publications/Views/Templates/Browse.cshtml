@@ -25,7 +25,10 @@
         <span class="glyphicon glyphicon-info-sign"></span><strong> Usunięto pomyślnie</strong>
     </div>
 </div>
-
+<div>
+    <input type="checkbox" id="onlyActive" class="" checked/><span> Tylko aktywne szablony</span>
+</div>
+<br />
 <table class="table templates-table table-striped">
     <thead>
         <tr>
@@ -34,6 +37,9 @@
             </th>
             <th>
                 Aktywny
+            </th>
+            <th>
+                Liczba publikacji
             </th>
             <th>
                 Data utworzenia
@@ -50,20 +56,24 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td class="col-sm-3">
+            <td class="col-sm-2">
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <td class="col-sm-1">
-                @Html.DisplayFor(modelItem => item.IsActive)
+            <td class="col-sm-2">
+                @{var active = item.IsActive ? "Tak" : "Nie";}
+                @active
             </td>
-            <td class="col-sm-3">
+            <td class="col-sm-2">
+                @Html.DisplayFor(modelItem => item.PublicationsCount)
+            </td>
+            <td class="col-sm-2">
                 @Html.DisplayFor(modelItem => item.CreationDate)
             </td>
-            <td class="col-sm-3">
+            <td class="col-sm-2">
                 @Html.DisplayFor(modelItem => item.ModifiedDate)
             </td>
             <td class="col-sm-1" style="padding-right:0px;">
-                <span data-toggle="tooltip" data-placement="top" title="@item.Description"><u>Opis</u></span>
+                <span data-toggle="tooltip" data-placement="top" title="@item.Description" style="cursor:default;"><u>Opis</u></span>
             </td>
             <td class="col-sm-1" style="padding-right:0px;">
                 <a asp-action="Details" asp-route-templateId="@item.TemplateId" data-toggle="tooltip" data-placement="top" title="Szczegóły"><span class="glyphicon glyphicon-edit glyph-button"></span></a>&nbsp;&nbsp;
@@ -142,16 +152,24 @@
                                 $(".removeAlert").show();
                                 var row = btn.parents("tr");
                                 dt.row(row).remove().draw();
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
-            }
             });
+        });
+
+        dt.columns(1).search("Tak").draw();
+        $("#onlyActive").prop("checked", true);
+        $("#onlyActive").change(function () {
+            var onlyActive = $(this).prop("checked");
+            if (onlyActive) {
+                dt.columns(1).search("Tak").draw();
+            } else {
+                dt.columns().search('').draw();
+            }
+        });
+
     });
-    });
-
-   
-
-
 
 </script>

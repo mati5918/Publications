@@ -5,9 +5,10 @@
     ViewData["Title"] = title;
 }
 
+
 <div class="row">
     <div class="col-sm-4">
-        <h3>@title</h3>
+        <h3 id="title">@title</h3>
     </div>
     <div class="col-sm-8">
         <div class="pull-right">
@@ -51,9 +52,7 @@
             <div class="col-sm-10">
                 <input type="checkbox" asp-for="IsActive" class="form-control checkbox" style="width:auto;"  id="isActive"/>
             </div>
-        </div>
-
-        
+        </div>       
     </form>
 </div>
 <br />
@@ -63,10 +62,10 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-6">
         <h3>Pozostale pola szablonu</h3>
     </div>
-    <div class="col-sm-8">
+    <div class="col-sm-6">
         <div class="pull-right">
             <button class="btn btn-success" style="width:180px; margin-top:20px;" id="addField"><span class="glyphicon glyphicon-plus"></span> Dodaj istniejace pole</button>
             <button class="btn btn-info " style="width:180px; margin-top:20px;"  id="addNewFieldModal"><span class="glyphicon glyphicon-plus"> </span> Dodaj nowe pole</button>
@@ -115,7 +114,7 @@
                             <label class="control-label">Typ:</label>
                         </div>
                         <div class="col-sm-10">
-                            <select asp-items="Html.GetEnumSelectList<FieldType>()" class="form-control" id="newFieldType"></select>
+                            <select asp-items="Html.GetEnumSelectList<FieldType>()" class="form-control" id="newFieldType" style="width:280px;"></select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -141,132 +140,150 @@
 <script type="text/javascript">
     $(document).ready(function () {
         renumerateTableRows();
-    })
 
-    $("#addField").click(function () {
-        $.ajax({
-            url: "@Url.Action("AddField")",
-            type: "GET",
-            success: function (response) {
-                $("tbody").append(response);
-                renumerateTableRows();
-            }
+        $('select').select2({
+            language: "pl"
         });
-    });
 
-    $(".fieldsList").on("change", ".fieldType", function () {
-        var type = $(this).val();
-        var url = "/Templates/GetFieldsByType?type=" + type;
-        var select = $(this);
-        $.ajax({
-            url: url,
-            type: "GET",
-            success: function (response) {
-                $(select).parents("tr").find(".fieldsSelect").html(response);
-            }
-        });
-    });
-
-    $(".fieldsList").on("click", ".removeField", function () {
-        $(this).closest("tr").remove();
-        renumerateTableRows();
-    });
-
-    $("#btnSave").click(function () {
-        var data = collectTemplateData();
-        //console.log(data);
-        $.ajax({
-            url: "@Url.Action("Save")",
-            type: "POST",
-            data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                //console.log(response);
-                var msg = response.message;
-                if (response.success) {
-                    $(".alertContainer .alert").addClass("alert-success");
-                    $(".alertContainer .alert").removeClass("alert-danger");
-
-                } else {
-                    $(".alertContainer .alert").removeClass("alert-success");
-                    $(".alertContainer .alert").addClass("alert-danger");
+        $("#addField").click(function () {
+            $.ajax({
+                url: "@Url.Action("AddField")",
+                type: "GET",
+                success: function (response) {
+                    $("tbody").append(response);
+                    renumerateTableRows();
+                    $('select').select2({
+                        language: "pl"
+                    });
                 }
-                $("#saveStatus").text(msg);
-                $(".alertContainer").show();
-            }
+            });
         });
-    });
 
-    function collectTemplateData() {
-        var fields = [];
-        $(".fieldsList tbody tr").each(function (i, v) {
-            var field = {
-                AttachId: $(v).find(".attachId").val(),
-                FieldId: $(v).find(".fieldId").val()
+        $(".fieldsList").on("change", ".fieldType", function () {
+            var type = $(this).val();
+            var url = "/Templates/GetFieldsByType?type=" + type;
+            var select = $(this);
+            console.log("ad");
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (response) {
+                    $(select).parents("tr").find(".fieldsSelect").html(response);
+                    $('select').select2({
+                        language: "pl"
+                    });
+                }
+            });
+        });
+
+        $(".fieldsList").on("click", ".removeField", function () {
+            $(this).closest("tr").remove();
+            renumerateTableRows();
+        });
+
+        $("#btnSave").click(function () {
+            var data = collectTemplateData();
+            //console.log(data);
+            $.ajax({
+                url: "@Url.Action("Save")",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    //console.log(response);
+                    var msg = response.message;
+                    if (response.success) {
+                        $(".alertContainer .alert").addClass("alert-success");
+                        $(".alertContainer .alert").removeClass("alert-danger");
+                        $("#title").html("Edycja szablonu");
+                        $("#templateId").val(response.id);
+                        console.log(response.id);
+                    } else {
+                        $(".alertContainer .alert").removeClass("alert-success");
+                        $(".alertContainer .alert").addClass("alert-danger");
+                    }
+                    $("#saveStatus").text(msg);
+                    $(".alertContainer").show();
+                }
+            });
+        });
+
+        function collectTemplateData() {
+            var fields = [];
+            $(".fieldsList tbody tr").each(function (i, v) {
+                var field = {
+                    AttachId: $(v).find(".attachId").val(),
+                    FieldId: $(v).find(".fieldId").val()
+                };
+                fields.push(field);
+            });
+            var saveVM = {
+                TemplateId: $("#templateId").val(),
+                Description: $("#templateDescription").val(),
+                Name: $("#templateName").val(),
+                IsActive: $("#isActive").prop("checked"),
+                Fields: fields
             };
-            fields.push(field);
-        });
-        var saveVM = {
-            TemplateId: $("#templateId").val(),
-            Description: $("#templateDescription").val(),
-            Name: $("#templateName").val(),
-            Fields: fields
-        };
 
-        return saveVM;
+            return saveVM;
 
-    }
-
-    $("#btnAddField").click(function () {
-        //$("#addModal").modal('hide');
-        var vm = {
-            Type: $("#newFieldType").val(),
-            Name: $("#newFieldName").val()
         }
-        $.ajax({
-            url: "@Url.Action("AddNewField")",
-            data: JSON.stringify(vm),
-            contentType: "application/json; charset=utf-8",
-            //dataType: "json",
-            type: "POST",
-            success: function (response) {
 
-                $("tbody").append(response);
-                var newSelect = $($(response)).find(".fieldId");
-                //console.log(newSelect.val());
-                refreshSelects(newSelect, vm.Type);
-                renumerateTableRows();
-                $('#addModal').modal('toggle');
-                //$('#addModal').hide();
-                $('.modal-backdrop').hide();
-            },
-            error: function (response) {
-                $(".addFieldAlert .alert").addClass("alert-danger");
-                $("#addFieldAlertText").text(response.responseText);
-                $(".addFieldAlert").show();
+        $("#btnAddField").click(function () {
+            //$("#addModal").modal('hide');
+            var vm = {
+                Type: $("#newFieldType").val(),
+                Name: $("#newFieldName").val()
             }
+            $.ajax({
+                url: "@Url.Action("AddNewField")",
+                data: JSON.stringify(vm),
+                contentType: "application/json; charset=utf-8",
+                //dataType: "json",
+                type: "POST",
+                success: function (response) {
+
+                    $("tbody").append(response);
+                    var newSelect = $($(response)).find(".fieldId");
+                    //console.log(newSelect.val());
+                    refreshSelects(newSelect, vm.Type);
+                    renumerateTableRows();
+                    $('select').select2({
+                        language: "pl"
+                    });
+                    $('#addModal').modal('toggle');
+                    //$('#addModal').hide();
+                    $('.modal-backdrop').hide();
+                },
+                error: function (response) {
+                    $(".addFieldAlert .alert").addClass("alert-danger");
+                    $("#addFieldAlertText").text(response.responseText);
+                    $(".addFieldAlert").show();
+                }
+            });
+            //return false;
+
+        })
+
+        $("#addNewFieldModal").click(function () {
+
+            $('#addModal').modal('toggle');
+            $(".addFieldAlert").hide();
         });
-        //return false;
 
-    })
+        function refreshSelects(newSelect, newFieldType) {
+            $(".fieldType").each(function (i, v) {
+                var currType = $(v).val();
+                if (currType == newFieldType) {
+                    var currValue = $(v).parents("tr").find(".fieldId").val();
+                    var select = $(newSelect).clone().select2();
+                    $(v).parents("tr").find(".fieldsSelect").empty();
+                    $(v).parents("tr").find(".fieldsSelect").html(select);
+                    $(v).parents("tr").find(".fieldId").val(currValue);
+                }
+            });
 
-    $("#addNewFieldModal").click(function () {
-        
-        $('#addModal').modal('toggle');
-        $(".addFieldAlert").hide();
+        }
     });
-
-    function refreshSelects(newSelect, newFieldType) {
-        $(".fieldType").each(function (i, v) {
-            var currType = $(v).val();
-            if (currType == newFieldType) {
-                var currValue = $(v).parents("tr").find(".fieldId").val();
-                console.log($(newSelect));
-                $(v).parents("tr").find(".fieldId").replaceWith($(newSelect).clone());
-                $(v).parents("tr").find(".fieldId").val(currValue);
-            }
-        });
-
-    }
 </script>
