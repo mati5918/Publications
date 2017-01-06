@@ -20,12 +20,20 @@
 </div>
 
 <br />
+<div class="row removeAlert" hidden>
+    <div class="alert alert-info col-sm-12">
+        <span class="glyphicon glyphicon-info-sign"></span><strong> Usunięto pomyślnie</strong>
+    </div>
+</div>
 
 <table class="table templates-table table-striped">
     <thead>
         <tr>
             <th>
                 Nazwa
+            </th>
+            <th>
+                Aktywny
             </th>
             <th>
                 Data utworzenia
@@ -45,6 +53,9 @@
             <td class="col-sm-3">
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
+            <td class="col-sm-1">
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
             <td class="col-sm-3">
                 @Html.DisplayFor(modelItem => item.CreationDate)
             </td>
@@ -54,9 +65,18 @@
             <td class="col-sm-1" style="padding-right:0px;">
                 <span data-toggle="tooltip" data-placement="top" title="@item.Description"><u>Opis</u></span>
             </td>
-            <td class="col-sm-2" style="padding-right:0px;">
+            <td class="col-sm-1" style="padding-right:0px;">
                 <a asp-action="Details" asp-route-templateId="@item.TemplateId" data-toggle="tooltip" data-placement="top" title="Szczegóły"><span class="glyphicon glyphicon-edit glyph-button"></span></a>&nbsp;&nbsp;
-                <a asp-action="Remove" asp-route-templateId="@item.TemplateId" data-toggle="tooltip" data-placement="top" title="Usuń"><span class="glyphicon glyphicon-remove glyph-button"></span></a>
+                @if (item.PublicationsCount == 0)
+                {
+                    <a class="removeBtn" data-templateId="@item.TemplateId" data-toggle="tooltip" data-placement="top" title="Usuń"><span class="glyphicon glyphicon-remove glyph-button"></span></a>
+                }
+                else
+                {
+                    <a class=""  data-toggle="tooltip" data-placement="top" title="Szablon zawiera publikacje w ilości @item.PublicationsCount. Takiego szablonu nie można usunać. Można oznaczyć go jako nieaktywny.">
+                        <span class="glyphicon glyphicon-remove glyph-button" style="opacity: 0.5;"></span>
+                    </a>
+                }
             </td>
         </tr>
 }
@@ -69,7 +89,7 @@
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
 
-        $(".templates-table").DataTable({
+        var dt = $(".templates-table").DataTable({
             language: {
                 "processing": "Przetwarzanie...",
                 "search": "Szukaj:",
@@ -97,6 +117,41 @@
                 'aTargets': ['nosort']
             }]
         });
+
+        $(".removeBtn").click(function () {
+            var id = $(this).attr("data-templateId");
+            var btn = $(this);
+            bootbox.confirm({
+                message: "Czy na pewno chcesz usunąć szablon?",
+                buttons: {
+                    confirm: {
+                        label: 'Tak',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'Nie',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "@Url.Action("Remove",new { id = "templateId"})".replace("templateId", id),
+                            type: "POST",
+                            success: function (response) {
+                                $(".removeAlert").show();
+                                var row = btn.parents("tr");
+                                dt.row(row).remove().draw();
+                        }
+                    });
+                }
+            }
+            });
     });
+    });
+
+   
+
+
 
 </script>

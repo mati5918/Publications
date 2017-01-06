@@ -20,7 +20,7 @@ namespace Publications.Services
 
         public IEnumerable<TemplateVM> GetAllTemplates()
         {
-            return context.PublicationTemplates.Select(t => MapEntityToVM(t, false));
+            return context.PublicationTemplates.Include(t => t.Publications).Select(t => MapEntityToVM(t, false));
         }
 
         public bool Save(SaveTemplateVM vm)
@@ -90,6 +90,16 @@ namespace Publications.Services
             return res;
         }
 
+        public void Remove(int id)
+        {
+            PublicationTemplate entity = context.PublicationTemplates.FirstOrDefault(t => t.PublicationTemplateId == id);
+            if (entity != null)
+            {
+                context.PublicationTemplates.Remove(entity);
+                context.SaveChanges();
+            }
+        }
+
         private TemplateVM MapEntityToVM(PublicationTemplate entity, bool includeFields)
         {
             TemplateVM res = new TemplateVM
@@ -98,7 +108,9 @@ namespace Publications.Services
                 Description = entity.Description,
                 ModifiedDate = entity.ModifiedDate,
                 Name = entity.Name,
-                TemplateId = entity.PublicationTemplateId
+                TemplateId = entity.PublicationTemplateId,
+                IsActive = entity.IsActive,
+                PublicationsCount = entity.Publications.Count()
             };
             if(includeFields)
             {
@@ -122,6 +134,7 @@ namespace Publications.Services
             if (id.HasValue)
             {
                 PublicationTemplate templateEntity = context.PublicationTemplates
+                    .Include(t => t.Publications)
                     .Include(t => t.FieldsTemplates)
                         .ThenInclude(ft => ft.Field)
                     .FirstOrDefault(t => t.PublicationTemplateId == id.Value);

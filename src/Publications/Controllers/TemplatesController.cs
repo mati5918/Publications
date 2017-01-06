@@ -81,5 +81,12 @@ namespace Publications.Controllers
                 return Json(new { success = false, message = "Wyst¹pi³ b³¹d w zapisie!" });
             }
         }
+
+        [HttpPost]
+        public IActionResult Remove(int id)
+        {
+            service.Remove(id);
+            return Json("");
+        }
     }
 }

@@ -57,5 +57,12 @@ namespace Publications.Controllers
             }
 
         }
+
+        [HttpPost]
+        public IActionResult Remove(int id)
+        {
+
+            return Json("");
+        }
     }
 }

@@ -12,6 +12,8 @@ namespace Publications.Models.ViewModels
         public DateTime ModifiedDate { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int PublicationsCount { get; set; }
+        public bool IsActive { get; set; }
 
         public List<FieldVM> Fields { get; set; } = new List<FieldVM>();
     }

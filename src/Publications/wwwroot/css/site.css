@@ -80,3 +80,7 @@ textarea {
 .templates-table th{
     text-align: center;
 }
+
+.glyph-button{
+    cursor:pointer;
+}
