@@ -46,6 +46,13 @@ namespace Publications.Controllers
             return View(vm);
         }
 
+        public IActionResult CopyTemplate(int id)
+        {
+            ViewBag.IsCopy = true;
+            ViewBag.IsNewTemplate = true;
+            return View("Details", service.CopyTemplate(id));
+        }
+
         [HttpPost]
         public IActionResult AddNewField([FromBody] AddFieldVM vm)
         {

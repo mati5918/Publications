@@ -19,7 +19,9 @@ namespace Publications.Models
         [Display(Name = "Logiczne")]
         Boolean,
         [Display(Name = "Plik")]
-        File
+        File,
+        [Display(Name = "Pole wyboru")]
+        Select = 6
         
     }
     public enum AcademicDegree

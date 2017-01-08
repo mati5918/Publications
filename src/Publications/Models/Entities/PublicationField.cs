@@ -10,6 +10,7 @@ namespace Publications.Models.Entities
         public int PublicationFieldId { get; set; }
         public string Name { get; set; }
         public FieldType Type { get; set; }
+        public string FieldData { get; set; }
 
         public List<FieldTemplate> FieldsTemplates { get; set; }
     }

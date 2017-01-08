@@ -23,5 +23,17 @@ namespace Publications.Services
                 .Select(f => new SelectListItem { Text = f.Name, Value = f.PublicationFieldId.ToString() })             
                 .ToList();
         }
+
+        public Dictionary<int, string> GetSelectValues()
+        {
+            Dictionary<int, string> res = new Dictionary<int, string>();
+            var selects = context.PublicationFields.Where(f => f.Type == FieldType.Select).ToList();
+            foreach(var select in selects)
+            {
+                Dictionary<int, string> fieldData = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int,string>>(select.FieldData);
+                res.Add(select.PublicationFieldId, string.Join(",", fieldData.Values));
+            }
+            return res;
+        }
     }
 }

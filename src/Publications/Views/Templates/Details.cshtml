@@ -1,10 +1,13 @@
 ﻿@model Publications.Models.ViewModels.TemplateVM
-
+@inject Publications.Services.FieldsProvider fieldsProvider
 @{
     string title = ViewBag.IsNewTemplate ? "Nowy szablon" : "Edycja szablonu";
+    bool isCopy = ViewBag.IsCopy != null && ViewBag.isCopy;
+    bool hasPublications = Model.PublicationsCount > 0;
     ViewData["Title"] = title;
+    //var selectsData = fieldsProvider.GetSelectValues();
+    
 }
-
 
 <div class="row">
     <div class="col-sm-4">
@@ -18,9 +21,29 @@
     </div>
 </div>
 <br />
+@if (isCopy)
+{
+    <div class="row copyAlert">
+        <div class="alert alert-success col-sm-12">
+            <strong>Skopiowano pomyślnie. Aby zachować zmiany szablon należy zapisać.</strong>
+        </div>
+    </div>
+}
+@if (hasPublications)
+{
+    <div class="row readOnlyAlert">
+        <div class="alert alert-warning col-sm-12">
+            <strong>
+                Istnieją publikacje korzystające z szablonu. Szablonu nie można edytować. Można utworzyć jego 
+                <a asp-action="CopyTemplate" asp-route-id="@Model.TemplateId">kopię</a>.
+            </strong>
+        </div>
+    </div>
+}
 <div class="row alertContainer" hidden>
     <div class="alert col-sm-12">
-        <strong id="saveStatus"></strong>
+        <strong id="saveStatus">
+        </strong>
     </div>
 </div>
 
@@ -126,6 +149,24 @@
                             <span class="help-block">Pole wymagane. Max 20 znakow.</span>
                         </div>
                     </div>
+                    <div id="selectValues" hidden>
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <label class="control-label">Wartości:</label>                               
+                            </div>
+                            <div class="col-sm-4">
+                                <button class="btn btn-info" type="button" id="addSelectValue"><span class="glyphicon glyphicon-plus"></span></button>
+                            </div>
+                        </div><br />
+                        <div class="form-group selectValuesLine">
+                            <div class="col-sm-2">
+                                <label class="control-label selectValueLabel">1.</label>
+                            </div>
+                            <div class="col-sm-10">
+                                <input class="form-control selectValue" />
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -139,8 +180,13 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
         renumerateTableRows();
-
+        var hasPublications = '@hasPublications' == "True";
+        console.log(hasPublications);
+        if (hasPublications) {
+            setReadOnly();
+        }
         $('select').select2({
             language: "pl"
         });
@@ -177,8 +223,10 @@
         });
 
         $(".fieldsList").on("click", ".removeField", function () {
-            $(this).closest("tr").remove();
-            renumerateTableRows();
+            if (!hasPublications) {
+                $(this).closest("tr").remove();
+                renumerateTableRows();
+            }
         });
 
         $("#btnSave").click(function () {
@@ -198,6 +246,7 @@
                         $(".alertContainer .alert").removeClass("alert-danger");
                         $("#title").html("Edycja szablonu");
                         $("#templateId").val(response.id);
+                        $(".copyAlert").hide();
                         console.log(response.id);
                     } else {
                         $(".alertContainer .alert").removeClass("alert-success");
@@ -232,9 +281,16 @@
 
         $("#btnAddField").click(function () {
             //$("#addModal").modal('hide');
+            var selectValues = [];
+            if ($("#newFieldType").val() == 6) {
+                $(".selectValue").each(function (i, v) {
+                    selectValues.push($(v).val());
+                });
+            }
             var vm = {
                 Type: $("#newFieldType").val(),
-                Name: $("#newFieldName").val()
+                Name: $("#newFieldName").val(),
+                SelectValues: selectValues
             }
             $.ajax({
                 url: "@Url.Action("AddNewField")",
@@ -266,6 +322,23 @@
 
         })
 
+        $("#addModal").on("change", "#newFieldType", function () {
+            if ($(this).val() == 6) {
+                $("#selectValues").show();
+            } else {
+                $("#selectValues").hide();
+            }
+        });
+
+        $("#addSelectValue").click(function () {           
+            var newLine = $(".selectValuesLine").first().clone();
+            $("#selectValues").append(newLine);
+            $(".selectValueLabel").each(function (i, v) {
+                $(v).text(i+1+".");
+            });
+        });
+
+
         $("#addNewFieldModal").click(function () {
 
             $('#addModal').modal('toggle');
@@ -284,6 +357,13 @@
                 }
             });
 
+        }
+
+        function setReadOnly() {
+            $("input").prop('disabled', true);
+            $("textarea").prop('disabled', true);
+            $("select").prop('disabled', true);
+            $("button").prop('disabled', true);
         }
     });
 </script>

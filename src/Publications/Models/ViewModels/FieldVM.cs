@@ -23,5 +23,6 @@ namespace Publications.Models.ViewModels
     {
         public string Name { get; set; }
         public FieldType Type { get; set; }
+        public List<string> SelectValues { get; set; }
     }
 }

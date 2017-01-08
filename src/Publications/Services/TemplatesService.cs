@@ -149,6 +149,18 @@ namespace Publications.Services
             return res;
         }
 
+        public TemplateVM CopyTemplate(int id)
+        {
+            TemplateVM res = GetTemplateById(id);
+            res.TemplateId = -1;
+            res.PublicationsCount = 0;
+            foreach(var field in res.Fields)
+            {
+                field.AttachId = -1;
+            }
+            return res;
+        }
+
         public int? AddNewField(AddFieldVM vm)
         {
             int? res = null;
@@ -159,6 +171,16 @@ namespace Publications.Services
                     Name = vm.Name,
                     Type = vm.Type
                 };
+                if(field.Type == FieldType.Select && vm.SelectValues != null)
+                {
+                    Dictionary<int, string> values = new Dictionary<int, string>();
+                    int i = 0;
+                    foreach(string value in vm.SelectValues)
+                    {
+                        values.Add(i++, value);
+                    }
+                     field.FieldData = Newtonsoft.Json.JsonConvert.SerializeObject(values);
+                }
                 context.PublicationFields.Add(field);
                 context.SaveChanges();
                 res = field.PublicationFieldId;

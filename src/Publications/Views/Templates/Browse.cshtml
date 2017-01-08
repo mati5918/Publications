@@ -77,6 +77,7 @@
             </td>
             <td class="col-sm-1" style="padding-right:0px;">
                 <a asp-action="Details" asp-route-templateId="@item.TemplateId" data-toggle="tooltip" data-placement="top" title="Szczegóły"><span class="glyphicon glyphicon-edit glyph-button"></span></a>&nbsp;&nbsp;
+                <a asp-action="CopyTemplate" asp-route-id="@item.TemplateId" data-toggle="tooltip" data-placement="top" title="Kopiuj szablon"><span class="glyphicon glyphicon-copy glyph-button"></span></a>&nbsp;&nbsp;
                 @if (item.PublicationsCount == 0)
                 {
                     <a class="removeBtn" data-templateId="@item.TemplateId" data-toggle="tooltip" data-placement="top" title="Usuń"><span class="glyphicon glyphicon-remove glyph-button"></span></a>

@@ -6,8 +6,12 @@
         <input asp-for="AttachId" class="attachId" hidden />
         <select asp-for="Type" asp-items="Html.GetEnumSelectList<FieldType>()" class="form-control fieldType"></select>
     </td>
-    <td class="fieldsSelect">@{Html.RenderPartial("FieldsList", Model);}</td>
-    <td><span class="glyphicon glyphicon-remove removeField"></span></td>
+    <td class="fieldsSelect">
+        @{Html.RenderPartial("FieldsList", Model);}
+    </td>          
+    <td>
+        <span class="glyphicon glyphicon-remove removeField "></span>
+    </td>
 </tr>
 
 
