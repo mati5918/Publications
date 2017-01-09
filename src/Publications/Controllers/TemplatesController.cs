@@ -95,5 +95,11 @@ namespace Publications.Controllers
             service.Remove(id);
             return Json("");
         }
+
+        [HttpPost]
+        public IActionResult GetSelectFieldValues(int id)
+        {
+            return Json(service.GetSelectFieldValues(id));
+        }
     }
 }

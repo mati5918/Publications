@@ -166,24 +166,48 @@ namespace Publications.Services
             int? res = null;
             try
             {
-                PublicationField field = new PublicationField
+                if (vm.Id == -1)
                 {
-                    Name = vm.Name,
-                    Type = vm.Type
-                };
-                if(field.Type == FieldType.Select && vm.SelectValues != null)
-                {
-                    Dictionary<int, string> values = new Dictionary<int, string>();
-                    int i = 0;
-                    foreach(string value in vm.SelectValues)
+                    PublicationField field = new PublicationField
                     {
-                        values.Add(i++, value);
+                        Name = vm.Name,
+                        Type = vm.Type
+                    };
+                    if (field.Type == FieldType.Select && vm.SelectValues != null)
+                    {
+                        Dictionary<int, string> values = new Dictionary<int, string>();
+                        int i = 0;
+                        foreach (string value in vm.SelectValues)
+                        {
+                            values.Add(i++, value);
+                        }
+                        field.FieldData = Newtonsoft.Json.JsonConvert.SerializeObject(values);
                     }
-                     field.FieldData = Newtonsoft.Json.JsonConvert.SerializeObject(values);
+                    context.PublicationFields.Add(field);
+                    context.SaveChanges();
+                    res = field.PublicationFieldId;
                 }
-                context.PublicationFields.Add(field);
-                context.SaveChanges();
-                res = field.PublicationFieldId;
+                else
+                {
+                    PublicationField field = context.PublicationFields.FirstOrDefault(f => f.PublicationFieldId == vm.Id);
+                    if(field != null)
+                    {
+                        field.Name = vm.Name;
+                        if (field.Type == FieldType.Select && vm.SelectValues != null)
+                        {
+                            Dictionary<int, string> values = new Dictionary<int, string>();
+                            int i = 0;
+                            foreach (string value in vm.SelectValues)
+                            {
+                                values.Add(i++, value);
+                            }
+                            field.FieldData = Newtonsoft.Json.JsonConvert.SerializeObject(values);
+                        }
+                        context.Entry(field).State = EntityState.Modified;
+                        context.SaveChanges();
+                        res = field.PublicationFieldId;
+                    }
+                }
             }
             catch { }
             return res;
@@ -191,7 +215,19 @@ namespace Publications.Services
 
         public bool isFieldNameValid(AddFieldVM vm)
         {
-            return !context.PublicationFields.Any(f => f.Type == vm.Type && f.Name.ToLower() == vm.Name.ToLower());
+            return !context.PublicationFields.Any(f => f.Type == vm.Type && f.Name.ToLower() == vm.Name.ToLower() && f.PublicationFieldId != vm.Id);
+        }
+
+        public List<string> GetSelectFieldValues(int id)
+        {
+            List<string> res = new List<string>();
+            var select = context.PublicationFields.FirstOrDefault(f => f.PublicationFieldId == id);
+            if(select != null)
+            {
+                Dictionary<int, string> fieldData = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, string>>(select.FieldData);
+                res.AddRange(fieldData.Values);
+            }
+            return res;
         }
     }
 }

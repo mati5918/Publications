@@ -5,8 +5,7 @@
     bool isCopy = ViewBag.IsCopy != null && ViewBag.isCopy;
     bool hasPublications = Model.PublicationsCount > 0;
     ViewData["Title"] = title;
-    //var selectsData = fieldsProvider.GetSelectValues();
-    
+    //var selectsData = fieldsProvider.GetSelectValues();    
 }
 
 <div class="row">
@@ -16,7 +15,6 @@
     <div class="col-sm-8">
         <div class="pull-right">
             <button class="btn btn-primary " id="btnSave" style="margin-top:20px;"><span class="glyphicon glyphicon-save"></span> Zapisz</button>
-            <button class="btn btn-danger " style="margin-top:20px;">Anuluj</button>
         </div>
     </div>
 </div>
@@ -123,7 +121,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" id="closeModal" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Stworz nowe pole.</h4>
+                <h4 class="modal-title">Nowe pole.</h4>
             </div>
             <div class="modal-body">
                 <div class="addFieldAlert" hidden>
@@ -136,34 +134,38 @@
                         <div class="col-sm-2">
                             <label class="control-label">Typ:</label>
                         </div>
-                        <div class="col-sm-10">
-                            <select asp-items="Html.GetEnumSelectList<FieldType>()" class="form-control" id="newFieldType" style="width:280px;"></select>
+                        <div class="col-sm-6">
+                            <select asp-items="Html.GetEnumSelectList<FieldType>()" class="form-control" id="newFieldType" style="width:265px;"></select>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-2">
                             <label class="control-label">Nazwa:</label>
                         </div>
-                        <div class="col-sm-10">
+                        <div class="col-sm-6">
+                            <input id="newFieldId" hidden />
                             <input class="form-control" id="newFieldName" maxlength="20" />
                             <span class="help-block">Pole wymagane. Max 20 znakow.</span>
                         </div>
                     </div>
                     <div id="selectValues" hidden>
                         <div class="row">
-                            <div class="col-sm-7">
+                            <div class="col-sm-2">
                                 <label class="control-label">Wartości:</label>                               
                             </div>
-                            <div class="col-sm-4">
-                                <button class="btn btn-info" type="button" id="addSelectValue"><span class="glyphicon glyphicon-plus"></span></button>
+                            <div class="col-sm-6">
+                                <button class="btn btn-info pull-right" type="button" id="addSelectValue"><span class="glyphicon glyphicon-plus"></span></button>
                             </div>
                         </div><br />
                         <div class="form-group selectValuesLine">
                             <div class="col-sm-2">
                                 <label class="control-label selectValueLabel">1.</label>
                             </div>
-                            <div class="col-sm-10">
-                                <input class="form-control selectValue" />
+                            <div class="col-sm-6">
+                                <input class="form-control selectValue" />                              
+                            </div>
+                            <div class="col-sm-1" style="padding-top:10px;">
+                                <span class="glyphicon glyphicon-remove glyph-button removeSelectValue"></span>
                             </div>
                         </div>
                     </div>
@@ -171,7 +173,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="btnAddField" class="btn btn-success">Dodaj</button>
-                <button type="button" class="btn btn-warning" data-dismiss="modal">Anuluj</button>
+                <button type="button" id="btnCloseModal" class="btn btn-warning" data-dismiss="modal">Anuluj</button>
             </div>
         </div>
 
@@ -287,29 +289,29 @@
                     selectValues.push($(v).val());
                 });
             }
+            var fieldId = parseInt($("#newFieldId").val());
             var vm = {
                 Type: $("#newFieldType").val(),
                 Name: $("#newFieldName").val(),
+                Id: $("#newFieldId").val(),
                 SelectValues: selectValues
             }
             $.ajax({
                 url: "@Url.Action("AddNewField")",
                 data: JSON.stringify(vm),
                 contentType: "application/json; charset=utf-8",
-                //dataType: "json",
                 type: "POST",
                 success: function (response) {
-
-                    $("tbody").append(response);
+                    if (fieldId == -1) {
+                        $("tbody").append(response);
+                        renumerateTableRows();
+                    } 
                     var newSelect = $($(response)).find(".fieldId");
-                    //console.log(newSelect.val());
                     refreshSelects(newSelect, vm.Type);
-                    renumerateTableRows();
                     $('select').select2({
                         language: "pl"
                     });
                     $('#addModal').modal('toggle');
-                    //$('#addModal').hide();
                     $('.modal-backdrop').hide();
                 },
                 error: function (response) {
@@ -318,20 +320,29 @@
                     $(".addFieldAlert").show();
                 }
             });
-            //return false;
-
         })
 
         $("#addModal").on("change", "#newFieldType", function () {
             if ($(this).val() == 6) {
+                $(".selectValuesLine").not(':first').remove();
+                $(".selectValuesLine").find(".removeSelectValue").show();
                 $("#selectValues").show();
             } else {
                 $("#selectValues").hide();
             }
         });
 
-        $("#addSelectValue").click(function () {           
+        $("#addModal").on("click", ".removeSelectValue", function () {
+            $(this).parents(".selectValuesLine").remove();
+            $(".selectValueLabel").each(function (i, v) {
+                $(v).text(i + 1 + ".");
+            });
+        });
+
+        $("#addSelectValue").click(function () {
             var newLine = $(".selectValuesLine").first().clone();
+            $(newLine).find(".selectValue").val("");
+            $(newLine).find(".removeSelectValue").show();
             $("#selectValues").append(newLine);
             $(".selectValueLabel").each(function (i, v) {
                 $(v).text(i+1+".");
@@ -340,10 +351,58 @@
 
 
         $("#addNewFieldModal").click(function () {
+            $('#addModal .modal-title').html('Nowe pole');
+            $("#newFieldType").prop("disabled", false);
+            $("#newFieldType").val("0").trigger("change");
+            $("#btnAddField").text("Dodaj");
+            $("#btnCloseModal").text("Anuluj");
+            $(".selectValue").val("");
+            $("#newFieldName").val("");
+            $("#newFieldId").val("-1");
 
             $('#addModal').modal('toggle');
             $(".addFieldAlert").hide();
         });
+
+        $(".fieldsList").on("click", ".btnEditField", function () {
+            $('#addModal .modal-title').html('Szczegóły pola');
+            $("#newFieldType").prop("disabled", true);
+            $("#btnAddField").text("Zapisz");
+            $("#btnCloseModal").text("Zamknij");
+            var fieldType = $(this).parents("tr").find(".fieldType").val();
+            $("#newFieldType").val(fieldType).trigger("change");
+            var fieldName = $(this).parents("tr").find(".fieldId option:selected").text();
+            $("#newFieldName").val(fieldName);
+            var fieldId = $(this).parents("tr").find(".fieldId").val();
+            $("#newFieldId").val(fieldId);
+
+            if (fieldType == 6) {
+                $.ajax({
+                    url: "@Url.Action("GetSelectFieldValues", new { id = "id"})".replace("id", fieldId),
+                    type: "POST",
+                    success: function (response) {                   
+                        for (var i = 0; i < response.length; i++) {
+                            if (i == 0) {
+                                $(".selectValuesLine").find(".selectValue").first().val(response[i]);
+                            } else {
+                                var newLine = $(".selectValuesLine").first().clone();
+                                $(newLine).find(".selectValue").val(response[i]);
+                                $("#selectValues").append(newLine);
+
+                            }
+                        }
+                        $(".selectValueLabel").each(function (i, v) {
+                            $(v).text(i + 1 + ".");
+                        });
+                        $(".removeSelectValue").hide();
+                    }
+                });
+
+            }
+            $('#addModal').modal('toggle');
+            $(".addFieldAlert").hide();
+        });
+
 
         function refreshSelects(newSelect, newFieldType) {
             $(".fieldType").each(function (i, v) {

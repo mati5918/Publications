@@ -84,3 +84,7 @@ textarea {
 .glyph-button{
     cursor:pointer;
 }
+
+.removeSelectValue{
+    color:#fff;
+}
