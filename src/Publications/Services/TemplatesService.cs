@@ -218,6 +218,11 @@ namespace Publications.Services
             return !context.PublicationFields.Any(f => f.Type == vm.Type && f.Name.ToLower() == vm.Name.ToLower() && f.PublicationFieldId != vm.Id);
         }
 
+        public bool IsTemplateNameValid(SaveTemplateVM vm)
+        {
+            return !context.PublicationTemplates.Any(t => t.Name.ToLower() == vm.Name.ToLower() && t.PublicationTemplateId != vm.TemplateId);
+        }
+
         public List<string> GetSelectFieldValues(int id)
         {
             List<string> res = new List<string>();

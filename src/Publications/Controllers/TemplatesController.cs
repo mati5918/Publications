@@ -78,6 +78,10 @@ namespace Publications.Controllers
         [HttpPost]
         public IActionResult Save([FromBody] SaveTemplateVM vm)
         {
+            if(!service.IsTemplateNameValid(vm))
+            {
+                return Json(new { success = false, message = "Nazwa szablonu musi byæ unikalna." });
+            }
             bool isSaveSuccess = service.Save(vm);
             if (isSaveSuccess)
             {

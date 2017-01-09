@@ -129,6 +129,11 @@
                         <strong id="addFieldAlertText"></strong>
                     </div>
                 </div>
+                <div id="editFieldAlert" hidden>
+                    <div class="alert alert-warning">
+                        <strong>Edycja pola wpłynie na wszystkie powiązane szablony i publikacje.</strong>
+                    </div>
+                </div>
                 <form class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-2">
@@ -184,6 +189,7 @@
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
         renumerateTableRows();
+        setSaveTemplateButtonEnabled();
         var hasPublications = '@hasPublications' == "True";
         console.log(hasPublications);
         if (hasPublications) {
@@ -326,10 +332,11 @@
             if ($(this).val() == 6) {
                 $(".selectValuesLine").not(':first').remove();
                 $(".selectValuesLine").find(".removeSelectValue").show();
-                $("#selectValues").show();
+                $("#selectValues").show();             
             } else {
                 $("#selectValues").hide();
             }
+            setSaveFieldButtonEnabled();
         });
 
         $("#addModal").on("click", ".removeSelectValue", function () {
@@ -337,6 +344,7 @@
             $(".selectValueLabel").each(function (i, v) {
                 $(v).text(i + 1 + ".");
             });
+            setSaveFieldButtonEnabled();
         });
 
         $("#addSelectValue").click(function () {
@@ -347,6 +355,7 @@
             $(".selectValueLabel").each(function (i, v) {
                 $(v).text(i+1+".");
             });
+            setSaveFieldButtonEnabled();
         });
 
 
@@ -359,6 +368,8 @@
             $(".selectValue").val("");
             $("#newFieldName").val("");
             $("#newFieldId").val("-1");
+            setSaveFieldButtonEnabled();
+            $("#editFieldAlert").hide();
 
             $('#addModal').modal('toggle');
             $(".addFieldAlert").hide();
@@ -375,7 +386,8 @@
             $("#newFieldName").val(fieldName);
             var fieldId = $(this).parents("tr").find(".fieldId").val();
             $("#newFieldId").val(fieldId);
-
+            $("#editFieldAlert").show();
+            setSaveFieldButtonEnabled();
             if (fieldType == 6) {
                 $.ajax({
                     url: "@Url.Action("GetSelectFieldValues", new { id = "id"})".replace("id", fieldId),
@@ -395,6 +407,7 @@
                             $(v).text(i + 1 + ".");
                         });
                         $(".removeSelectValue").hide();
+                        setSaveFieldButtonEnabled();
                     }
                 });
 
@@ -403,6 +416,38 @@
             $(".addFieldAlert").hide();
         });
 
+
+        $("#addModal").on("keyup", ".selectValue, #newFieldName", function () {
+            setSaveFieldButtonEnabled();
+        });
+
+        $("#templateName").on("keyup", function () {
+            setSaveTemplateButtonEnabled();
+        });
+
+        function setSaveTemplateButtonEnabled() {
+            if ($("#templateName").val().length == 0) {
+                $("#btnSave").prop("disabled", true);
+            } else {
+                $("#btnSave").prop("disabled", false);
+            }
+        }
+
+        function setSaveFieldButtonEnabled() {
+            var isValid = false;
+            if ($("#newFieldName").val().length > 0) {
+                isValid = true;
+                var type = $("#newFieldType").val();
+                if (type == 6) {
+                    $(".selectValue").each(function (i, v) {
+                        if ($(v).val().length == 0) {
+                            isValid = false;
+                        }
+                    });
+                }
+            }
+            $("#btnAddField").prop("disabled", !isValid);
+        };
 
         function refreshSelects(newSelect, newFieldType) {
             $(".fieldType").each(function (i, v) {
