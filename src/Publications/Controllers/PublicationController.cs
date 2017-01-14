@@ -51,7 +51,7 @@ namespace Publications.Controllers
             return PartialView("TemplatesSelectList", publicationService.GetAllPublicationTemplate());
         }
         [HttpPost]
-        public IActionResult Add(SavePublicationVM savePublication)
+        public IActionResult Add([FromBody]SavePublicationVM savePublication)
         {
             bool isDone = publicationService.AddPublication(savePublication);
             if (isDone)

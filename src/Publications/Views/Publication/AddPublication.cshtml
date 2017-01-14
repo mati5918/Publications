@@ -14,7 +14,7 @@
         <div class="form-group">
             <label asp-for="Title" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Title" class="form-control" />
+                <input asp-for="Title" class="form-control" id="Title"/>
                 <span asp-validation-for="Title" class="text-danger" />
             </div>
         </div>
@@ -98,42 +98,54 @@
         });
     });
     $("#Createbtn").click(function () {
+        var data = collectPublicationData();
+        alert(JSON.stringify(data));
         $.ajax({
-            url: "@Url.Action("ShowTemplatesList")",
-            type: "GET",
+            url: "@Url.Action("Add")",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
             success: function (response) {
                 $("#TemplateList").html(response);
             }
         });
     });
-    function collectTemplateData() {
+    function collectPublicationData() {
         var FieldsValue = [];
         $("#publications tbody tr").each(function (i, v) {
             var fieldValue = {
-                FieldType: $(".fieldtype").html(),
-                FieldName: $(".fieldname").html(),
-                FieldValue: $(".fieldvalue").val()
+                FieldType: $(v).find(".fieldtype").html(),
+                Name: $(v).find(".fieldname").html(),
+                Value: $(v).find(".fieldvalue").val()
             };
-            fields.push(fieldValue);
+            FieldsValue.push(fieldValue);
         });
         var Authors = [];
         $("#Authors tbody tr").each(function (i, v) {
-            var fieldValue = {
-                FieldType: $(".degree").val(),
-                FieldName: $(".firstname").val(),
-                FieldValue: $(".secondvalue").val()
+            var author = {
+                AcademicDegree: $(v).find(".degree").val(),
+                FirstName: $(v).find(".firstname").val(),
+                SecondName: $(v).find(".secondname").val()
             };
-            fields.push(fieldValue);
+            Authors.push(author);
+        });
+        var BranchesOfKnowledge = [];
+        $("#Branches tbody tr").each(function (i, v) {
+            var branch = {
+                Name: $(v).find(".name").val(),
+            };
+            BranchesOfKnowledge.push(branch);
         });
         var PublicationVM = {
-            TemplateId: $("#templateId").val(),
-            Description: $("#templateDescription").val(),
-            Name: $("#templateName").val(),
-            IsActive: $("#isActive").prop("checked"),
-            Fields: fields
+            BranchesOfKnowledge: BranchesOfKnowledge,
+            Authors: Authors,
+            FieldsValue: FieldsValue,
+            Title: $("#Title").val(),
+            TemplateId: $("#PublicationTemplate").val()
         };
 
-        return saveVM;
+        return PublicationVM;
 
     }
 </script>
