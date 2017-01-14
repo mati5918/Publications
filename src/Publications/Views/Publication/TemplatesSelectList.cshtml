@@ -4,7 +4,10 @@
     var templates = new List<SelectListItem>();
     foreach (Publications.Models.Entities.PublicationTemplate item in Model)
     {
-        templates.Add(new SelectListItem() { Value = item.PublicationTemplateId.ToString(), Text = item.Name });
+        if (item.IsActive)
+        {
+            templates.Add(new SelectListItem() { Value = item.PublicationTemplateId.ToString(), Text = item.Name });
+        }
     }
 }
 

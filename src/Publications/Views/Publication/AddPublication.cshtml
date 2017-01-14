@@ -24,11 +24,6 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Utwórz" class="btn btn-default" id="Createbtn" />
-            </div>
-        </div>
-        <div class="form-group">
             <table id="Authors" class="table">
                 <thead>
                     <tr>
@@ -46,8 +41,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
         <div class="form-group">
@@ -62,10 +56,13 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-
-                </tbody>
+                <tbody></tbody>
             </table>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Utwórz" class="btn btn-default" id="Createbtn" />
+            </div>
         </div>
     </div>
 </form>
@@ -117,7 +114,8 @@
             var fieldValue = {
                 FieldType: $(v).find(".fieldtype").html(),
                 Name: $(v).find(".fieldname").html(),
-                Value: $(v).find(".fieldvalue").val()
+                Value: $(v).find(".fieldvalue").val(),
+                isChecked: $(v).find(".fieldvalue").is(":checked")
             };
             FieldsValue.push(fieldValue);
         });

@@ -11,5 +11,6 @@ namespace Publications.Models.ViewModels
         public FieldType FieldType { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
+        public bool isChecked { get; set; }
     }
 }

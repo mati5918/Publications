@@ -78,7 +78,7 @@ namespace Publications.Services
         }
         private string GetNameOfFieldValue(FieldValue fieldValue)
         {
-            return (from fv in db.FieldValues join f in db.PublicationFields on fv.PublicationFeildId equals f.PublicationFieldId where fv.FieldValueId == fieldValue.FieldValueId select f).ToList()[0].Name;
+            return (from fv in db.FieldValues join f in db.PublicationFields on fv.PublicationFieldId equals f.PublicationFieldId where fv.FieldValueId == fieldValue.FieldValueId select f).ToList()[0].Name;
         }
         private FieldType GetTypeOfFieldValue(FieldValue fieldValue)
         {
@@ -154,9 +154,33 @@ namespace Publications.Services
                 foreach (FieldValueVM item in savePublication.FieldsValue)
                 {
                     PublicationField publicationField = findFieldByName(item.Name);
-                    db.FieldValues.Add(new FieldValue() { Publication = pub, Value = item.Value, PublicationField = publicationField });
+                    db.FieldValues.Add(new FieldValue() { Publication = pub, Value = item.FieldType != FieldType.Boolean?item.Value:item.isChecked.ToString(), PublicationField = publicationField });
                 }
                 db.Publications.Add(pub);
+                foreach (var item in savePublication.Authors)
+                {
+                    if (!IsAuthorExist(item))
+                    {
+                        db.Authors.Add(item);
+                        db.AuthorPublications.Add(new AuthorPublication() { Author = item, Publication = pub });
+                    }
+                    else
+                    {
+                        db.AuthorPublications.Add(new AuthorPublication() { Author = GetTheSameAuthor(item), Publication = pub });
+                    }
+                }
+                foreach (var item in savePublication.BranchesOfKnowledge)
+                {
+                    if (!IsBranchExist(item))
+                    {
+                        db.BranchOfKnowledges.Add(item);
+                        db.BranchOfKnowledgePublications.Add(new BranchOfKnowledgePublication() { BranchOfKnowledge = item, Publication = pub });
+                    }
+                    else
+                    {
+                        db.BranchOfKnowledgePublications.Add(new BranchOfKnowledgePublication() { BranchOfKnowledge = GetTheSameBranch(item), Publication = pub });
+                    }
+                }
                 db.SaveChanges();
                 return true;
             }
@@ -186,7 +210,6 @@ namespace Publications.Services
             }
             return temp;
         }
-
         public List<FieldValueVM> GenerateNewFieldValue(int? templateId)
         {
             List<FieldValueVM> temp = new List<FieldValueVM>();
@@ -196,6 +219,22 @@ namespace Publications.Services
                 temp.Add(new FieldValueVM() { FieldType = item.Type, Name = item.Name, Value = "" });
             }
             return temp;
+        }
+        private bool IsAuthorExist(Author author)
+        {
+            return (from a in db.Authors where a.AcademicDegree == author.AcademicDegree && a.FirstName == author.FirstName && a.SecondName == author.SecondName select a).ToList().Count != 0 ? true : false;
+        }
+        private bool IsBranchExist(BranchOfKnowledge branch)
+        {
+            return (from b in db.BranchOfKnowledges where b.Name == branch.Name select b).ToList().Count != 0 ? true : false;
+        }
+        private Author GetTheSameAuthor(Author author)
+        {
+            return (from a in db.Authors where a.AcademicDegree == author.AcademicDegree && a.FirstName == author.FirstName && a.SecondName == author.SecondName select a).ToList()[0];
+        }
+        private BranchOfKnowledge GetTheSameBranch(BranchOfKnowledge branch)
+        {
+            return (from b in db.BranchOfKnowledges where b.Name == branch.Name select b).ToList()[0];
         }
     }
 }
