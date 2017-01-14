@@ -12,7 +12,14 @@ namespace Publications.Models.Statistisc
         public string TimeAmount { get; set; }
         public int PublicationsCount { get; set; }
         public double PercentOfAllPublications { get; set; }
-        public Dictionary<string, int> PublicationsPerKonwledgeBranch { get; set; }
-        public Dictionary<string, double> PercentOfPublicationsPerKonwledgeBranch { get; set; }
+        public List<PublicationsPerKnowledgeBranch> PublicationsPerKonwledgeBranch { get; set; }
+        
+    }
+
+    public class PublicationsPerKnowledgeBranch
+    {
+        public string KnowledgeBranchName { get; set; }
+        public int PublicationsCount { get; set; }
+        public double PublicationsPercentage { get; set; }
     }
 }

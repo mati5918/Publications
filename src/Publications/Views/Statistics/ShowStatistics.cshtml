@@ -1,3 +1,5 @@
+@using System.Threading.Tasks
+@using Publications.Models.Statistisc
 @model Publications.Models.Statistisc.StatisticsViewModel
 
 @{
@@ -9,13 +11,18 @@
 
 <div>
     <hr />
-    <dl class="dl-horizontal">      
+    <dl class="dl-horizontal">  
+        @if (!string.IsNullOrEmpty(Model.TimeAmount))
+        {
         <dt>
             Okres czasu:
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.TimeAmount)
-        </dd>
+            
+                @Html.DisplayFor(model => model.TimeAmount)
+            
+        </dd> 
+}
         @if (!string.IsNullOrEmpty(Model.AuthorName))
         {
             <dt>
@@ -26,14 +33,14 @@
             </dd>
         } 
         @if (!string.IsNullOrEmpty(Model.KnowledgeBranchName))
-         {
-             <dt>
-                 Dziedzina wiedzy:
-             </dt>
-             <dd>
-                 @Html.DisplayFor(model => model.KnowledgeBranchName)
-             </dd>
-         }
+        {
+            <dt>
+                Dziedzina wiedzy:
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.KnowledgeBranchName)
+            </dd>
+        }
         <dt>
             Ilosc publikacji:
         </dt>
@@ -46,25 +53,126 @@
         <dd>
             @Html.DisplayFor(model => model.PercentOfAllPublications)
         </dd>
-         <dt>
+        <dt>
             Publikacje/galaz wiedzy:
         </dt>
         <dd>
-            @Html.Partial("_DictionaryWithIntegerKeyDisplay", Model.PublicationsPerKonwledgeBranch)
-        </dd>   
-        
-        <dt>
-            % publikacji na galaz wiedzy:
-        </dt>
-        <dd>
-            @Html.Partial("_DictionaryDisplay", Model.PercentOfPublicationsPerKonwledgeBranch)
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        Dziedzina wiedzy
+                    </th>
+                    <th>
+                        Publikacje
+                    </th>
+                    <th>
+                        Procent publikacji
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.PublicationsPerKonwledgeBranch)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.KnowledgeBranchName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PublicationsCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PublicationsPercentage)%
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
         </dd>   
 
-    </dl>  
-    
-    <div class="form-group">
-        <div class="col-md-10">
-            <input type="submit" value="ZatwierdŸ" class="btn btn-default" />
+    </dl> 
+    @using (Html.BeginForm("SaveToPdf", "Statistics", FormMethod.Post, new { id = "formPdf" }))
+    {
+        for (int i = 0; i < Model.PublicationsPerKonwledgeBranch.Count; i++)
+        {
+
+            @Html.HiddenFor(item => Model.PublicationsPerKonwledgeBranch[i].KnowledgeBranchName)
+            @Html.HiddenFor(item => Model.PublicationsPerKonwledgeBranch[i].PublicationsCount)
+            @Html.HiddenFor(item => Model.PublicationsPerKonwledgeBranch[i].PublicationsPercentage)
+
+        }
+        @Html.HiddenFor(item => Model.AuthorName)
+        @Html.HiddenFor(item => Model.KnowledgeBranchName)
+        @Html.HiddenFor(item => Model.PercentOfAllPublications)
+        @Html.HiddenFor(item => Model.PublicationsCount)
+        @Html.HiddenFor(item => Model.TimeAmount)
+    }
+    @using (Html.BeginForm("SaveToMsWord", "Statistics", FormMethod.Post, new { id = "formMsword"}))
+    {
+
+        for (int i = 0; i < Model.PublicationsPerKonwledgeBranch.Count; i++ )
+        {
+
+            @Html.HiddenFor(item => Model.PublicationsPerKonwledgeBranch[i].KnowledgeBranchName)
+            @Html.HiddenFor(item => Model.PublicationsPerKonwledgeBranch[i].PublicationsCount)
+            @Html.HiddenFor(item => Model.PublicationsPerKonwledgeBranch[i].PublicationsPercentage)
+
+        }
+        @Html.HiddenFor(item => Model.AuthorName)
+        @Html.HiddenFor(item => Model.KnowledgeBranchName)
+        @Html.HiddenFor(item => Model.PercentOfAllPublications)
+        @Html.HiddenFor(item => Model.PublicationsCount)
+        @Html.HiddenFor(item => Model.TimeAmount)
+    }
+    @using (Html.BeginForm("SaveToExcell", "Statistics", FormMethod.Post, new { id = "formExcel" }))
+    {
+
+        for (int i = 0; i < Model.PublicationsPerKonwledgeBranch.Count; i++)
+        {
+
+            @Html.HiddenFor(item => Model.PublicationsPerKonwledgeBranch[i].KnowledgeBranchName)
+            @Html.HiddenFor(item => Model.PublicationsPerKonwledgeBranch[i].PublicationsCount)
+            @Html.HiddenFor(item => Model.PublicationsPerKonwledgeBranch[i].PublicationsPercentage)
+
+        }
+
+        @Html.HiddenFor(item => Model.AuthorName)
+        @Html.HiddenFor(item => Model.KnowledgeBranchName)
+        @Html.HiddenFor(item => Model.PercentOfAllPublications)
+        @Html.HiddenFor(item => Model.PublicationsCount)
+        @Html.HiddenFor(item => Model.TimeAmount) 
+    }
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                        Zapisz jako
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button onclick="Submit(0)">Dokument programu MS Word</button></li>
+                        <li><button onclick="Submit(1)">Dokument PDF</button></li>
+                        <li><button onclick="Submit(2)">Arkusz kalkulacyjny (.xlsx)</button></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
+    
 </div>
+<script>
+    function Submit(docType) {
+        switch (docType) {
+            case 0:
+                document.getElementById('formMsword').submit();
+                break;
+            case 1: document.getElementById('formPdf').submit();
+                break;
+            case 2: document.getElementById('formExcel').submit();
+                break;
+            default:
+                break;
+        }
+    }
+</script>  
