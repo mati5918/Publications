@@ -96,35 +96,37 @@
     });
     $("#Createbtn").click(function () {
         var data = collectPublicationData();
-        alert(JSON.stringify(data));
         $.ajax({
-            url: "@Url.Action("Add")",
             type: "POST",
-            data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
+            url: "@Url.Action("Add")",
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (message) {
                 $("#TemplateList").html(response);
             }
         });
+        return false;
     });
     function collectPublicationData() {
         var FieldsValue = [];
+        var files = [];
         $("#publications tbody tr").each(function (i, v) {
-            var data = [];
-            try{
-                data = $(v).find(".fieldvalue").get(0).files[0]
+            //var data = ;
+            var file = $(v).find(".fieldvalue").get(0).files[0];
+            if (file != null) {
+                files.push({
+                    Name: $(v).find(".fieldname").html(),
+                    File: file
+                });
             }
-            catch (e) {
 
-
-            }
             var fieldValue = {
                 FieldType: $(v).find(".fieldtype").html(),
                 Name: $(v).find(".fieldname").html(),
                 Value: $(v).find(".fieldvalue").val(),
                 isChecked: $(v).find(".fieldvalue").is(":checked"),
-                FileInformation: data
+                //FileInformation: data
             };
             FieldsValue.push(fieldValue);
         });
@@ -152,8 +154,20 @@
             TemplateId: $("#PublicationTemplate").val()
         };
 
-        return PublicationVM;
+        var form = new FormData();
+        form.append("BranchesOfKnowledge", JSON.stringify(BranchesOfKnowledge));
+        //TODO: authors and fieldsvalues in the same way
+        form.append("Title", PublicationVM.Title);
+        form.append("TemplateId", PublicationVM.TemplateId);
+        $(files).each(function (i, fileInfo) {
+            form.append(fileInfo.Name, fileInfo.File)
+        });
 
+        /*for (var pair of form.entries()) {
+            console.log(pair[0] + ', ' + pair[1]);
+        }*/
+        //return PublicationVM;
+        return form;
     }
 </script>
 

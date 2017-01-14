@@ -51,8 +51,21 @@ namespace Publications.Controllers
             return PartialView("TemplatesSelectList", publicationService.GetAllPublicationTemplate());
         }
         [HttpPost]
-        public IActionResult Add([FromBody]SavePublicationVM savePublication)
+        public IActionResult Add(SavePublicationStringVM savePublicationString)
         {
+            SavePublicationVM savePublication = new SavePublicationVM
+            {
+                Id = savePublicationString.Id,
+                TemplateId = savePublicationString.TemplateId,
+                Title = savePublicationString.Title,
+                BranchesOfKnowledge = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BranchOfKnowledge>>(savePublicationString.BranchesOfKnowledge)
+                //TODO: authors and field values in the same way
+            }; //TODO move mapping to service (or not move :D)
+            foreach(var file in Request.Form.Files)
+            {
+                //there are all files, Name propery is the name of file type field
+                //TODO: save and move foreach loop to save service method
+            }
             bool isDone = publicationService.AddPublication(savePublication);
             if (isDone)
             {
