@@ -15,13 +15,13 @@ namespace Publications.Models.Statistisc
 
         [DataType(DataType.Date)]
         public DateTime EndOfTimeAmount { get; set; }
-        public int? KnowledgeBranchId { get; set; }
-        public int? AuthorId { get; set; }
+        public int KnowledgeBranchId { get; set; }
+        public int AuthorId { get; set; }
 
         public StatisticsFilter()
         {
-            StartOfTimeAmount=DateTime.Now;
-            EndOfTimeAmount=DateTime.Now;
+            StartOfTimeAmount=DateTime.MinValue;
+            EndOfTimeAmount=DateTime.MaxValue;
         }
     }
 }
