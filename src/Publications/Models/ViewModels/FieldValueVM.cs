@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,5 +13,6 @@ namespace Publications.Models.ViewModels
         public string Name { get; set; }
         public string Value { get; set; }
         public bool isChecked { get; set; }
+        public IFormFile FileInformation { get; set; }
     }
 }

@@ -111,11 +111,20 @@
     function collectPublicationData() {
         var FieldsValue = [];
         $("#publications tbody tr").each(function (i, v) {
+            var data = [];
+            try{
+                data = $(v).find(".fieldvalue").get(0).files[0]
+            }
+            catch (e) {
+
+
+            }
             var fieldValue = {
                 FieldType: $(v).find(".fieldtype").html(),
                 Name: $(v).find(".fieldname").html(),
                 Value: $(v).find(".fieldvalue").val(),
-                isChecked: $(v).find(".fieldvalue").is(":checked")
+                isChecked: $(v).find(".fieldvalue").is(":checked"),
+                FileInformation: data
             };
             FieldsValue.push(fieldValue);
         });
