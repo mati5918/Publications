@@ -33,7 +33,14 @@ namespace Publications.Controllers
             IEnumerable<FieldValueVM> fieldValues = publicationService.GenerateNewFieldValue(templateId);
             return PartialView(fieldValues);
         }
-
+        public IActionResult AuthorRow()
+        {
+            return PartialView("AuthorRow");
+        }
+        public IActionResult BranchRow()
+        {
+            return PartialView("BranchRow");
+        }
 
         public IActionResult AddPublication()
         {

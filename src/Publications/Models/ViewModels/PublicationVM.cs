@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Publications.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace Publications.Models.ViewModels
         public string Title { get; set; }
         public int TemplateId { get; set; }
         public List<FieldValueVM> FieldsValue{ get; set; } 
-
+        public List<Author> Authors { get; set; }
+        public List<BranchOfKnowledge> BranchesOfKnowledge { get; set; }
     }
 }

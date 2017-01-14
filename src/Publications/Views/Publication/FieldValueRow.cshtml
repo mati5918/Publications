@@ -1,4 +1,4 @@
-@model IEnumerable<Publications.Models.ViewModels.FieldValueVM>
+﻿@model IEnumerable<Publications.Models.ViewModels.FieldValueVM>
 <table id="publications" class="table">
     <thead>
         <tr>
@@ -20,13 +20,13 @@
             case FieldType.String:
                 <tr>
                     <td>
-                        @item.Name
+                        <p class="fieldname">@item.Name</p>
                     </td>
                     <td>
-                        @item.FieldType
+                        <p class="fieldtype">@item.FieldType</p>
                     </td>
                     <td>
-                        <input class="form-control" width="40" />
+                        <input class="form-control fieldvalue" width="40" />
                     </td>
                 </tr>
                 break;
@@ -34,13 +34,13 @@
                 <tbody>
                     <tr>
                         <td>
-                            @item.Name
+                            <p class="fieldname">@item.Name</p>
                         </td>
                         <td>
-                            @item.FieldType
+                            <p class="fieldtype">@item.FieldType</p>
                         </td>
                         <td>
-                            <textarea data-bind="item.Value" class="form-control"></textarea>
+                            <textarea data-bind="item.Value" class="form-control fieldvalue"></textarea>
                         </td>
                     </tr>
                 </tbody>
@@ -48,52 +48,52 @@
             case FieldType.Number:
                 <tr>
                     <td>
-                        @item.Name
+                        <p class="fieldname">@item.Name</p>
                     </td>
                     <td>
-                        @item.FieldType
+                        <p class="fieldtype">@item.FieldType</p>
                     </td>
                     <td>
-                        <input class="form-control" width="40" />
+                        <input type="number" class="form-control fieldvalue" width="40" />
                     </td>
                 </tr>
                 break;
             case FieldType.DateTime:
                 <tr>
                     <td>
-                        @item.Name
+                        <p class="fieldname">@item.Name</p>
                     </td>
                     <td>
-                        @item.FieldType
+                        <p class="fieldtype">@item.FieldType</p>
                     </td>
                     <td>
-                        <input type="date" class="form-control" />
+                        <input type="date" class="form-control fieldvalue" />
                     </td>
                 </tr>
                 break;
             case FieldType.Boolean:
                 <tr>
                     <td>
-                        @item.Name
+                        <p class="fieldname">@item.Name</p>
                     </td>
                     <td>
-                        @item.FieldType
+                        <p class="fieldtype">@item.FieldType</p>
                     </td>
                     <td>
-                        <input type="checkbox" class="form-control" width="10" height="10" />
+                        <input type="checkbox" class="form-control fieldvalue" width="10" height="10" />
                     </td>
                 </tr>
                 break;
             case FieldType.File:
                 <tr>
                     <td>
-                        @item.Name
+                        <p class="fieldname">@item.Name</p>
                     </td>
                     <td>
-                        @item.FieldType
+                        <p class="fieldtype">@item.FieldType</p>
                     </td>
                     <td>
-                        <input type="file" class="form-control" />
+                        <input type="file" class="form-control fieldvalue" />
                     </td>
                 </tr>
                 break;

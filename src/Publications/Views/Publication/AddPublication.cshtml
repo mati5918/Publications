@@ -1,4 +1,4 @@
-@model Publications.Models.ViewModels.SavePublicationVM
+﻿@model Publications.Models.ViewModels.SavePublicationVM
 
 @{
     ViewData["Title"] = "AddPublication";
@@ -25,8 +25,47 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Utw�rz" class="btn btn-default" id="Createbtn" />
+                <input type="submit" value="Utwórz" class="btn btn-default" id="Createbtn" />
             </div>
+        </div>
+        <div class="form-group">
+            <table id="Authors" class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Stopień
+                        </th>
+                        <th>
+                            Imię
+                        </th>
+                        <th>
+                            Nazwisko
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group">
+            <table id="Branches" class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
         </div>
     </div>
 </form>
@@ -35,25 +74,68 @@
     <a asp-action="Index">Back to List</a>
 </div>
 <script type="text/javascript">
-$(document).ready(function () {
-            $.ajax({
+    $(document).ready(function () {
+        $.ajax({
             url: "@Url.Action("ShowTemplatesList")",
             type: "GET",
             success: function (response) {
-            $("#TemplateList").html(response);
+                $("#TemplateList").html(response);
             }
-            });
-})
+        });
+        $.ajax({
+            url: "@Url.Action("AuthorRow")",
+            type: "GET",
+        success: function (response) {
+            $("#Authors").append(response);
+        }
+        });
+        $.ajax({
+            url: "@Url.Action("BranchRow")",
+            type: "GET",
+        success: function (response) {
+            $("#Branches").append(response);
+        }
+        });
+    });
     $("#Createbtn").click(function () {
         $.ajax({
             url: "@Url.Action("ShowTemplatesList")",
             type: "GET",
-        success: function (response) {
-            $("#TemplateList").html(response);
-        }
+            success: function (response) {
+                $("#TemplateList").html(response);
+            }
+        });
     });
+    function collectTemplateData() {
+        var FieldsValue = [];
+        $("#publications tbody tr").each(function (i, v) {
+            var fieldValue = {
+                FieldType: $(".fieldtype").html(),
+                FieldName: $(".fieldname").html(),
+                FieldValue: $(".fieldvalue").val()
+            };
+            fields.push(fieldValue);
+        });
+        var Authors = [];
+        $("#Authors tbody tr").each(function (i, v) {
+            var fieldValue = {
+                FieldType: $(".degree").val(),
+                FieldName: $(".firstname").val(),
+                FieldValue: $(".secondvalue").val()
+            };
+            fields.push(fieldValue);
+        });
+        var PublicationVM = {
+            TemplateId: $("#templateId").val(),
+            Description: $("#templateDescription").val(),
+            Name: $("#templateName").val(),
+            IsActive: $("#isActive").prop("checked"),
+            Fields: fields
+        };
 
-    })
+        return saveVM;
+
+    }
 </script>
 
 @section Scripts {

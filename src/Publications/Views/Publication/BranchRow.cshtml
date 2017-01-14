@@ -1,0 +1,27 @@
+@model Publications.Models.Entities.BranchOfKnowledge
+
+<tr>
+    <td>
+        <input class="form-control name" width="40" />
+    </td>
+    <td>
+        <span class="glyphicon glyphicon-plus glyph-button AddBranch"></span>&nbsp; &nbsp;
+        <span class="glyphicon glyphicon-remove RemoveBranch" style="display:none;"></span>
+    </td>
+</tr>
+<script type="text/javascript">
+    $(".AddBranch").click(function () {
+        $.ajax({
+            url: "@Url.Action("BranchRow")",
+            type: "GET",
+            success: function (response) {
+                $(".AddAuthor").hide();
+                $(".RemoveAuthor").show();
+                $("#Branches").append(response);
+            }
+        });
+    });
+    $(".RemoveBranch").click(function () {
+        $(this).closest("tr").remove();
+    });
+</script>
