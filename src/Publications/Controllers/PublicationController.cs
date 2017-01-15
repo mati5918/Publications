@@ -109,6 +109,7 @@ namespace Publications.Controllers
             string fileText = System.IO.File.ReadAllText(filePath);
             return File(fileText, "application/x-msdownload", fileName);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Remove(int id)
         {
