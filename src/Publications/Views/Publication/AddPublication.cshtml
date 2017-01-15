@@ -103,7 +103,7 @@
             processData: false,
             data: data,
             success: function (message) {
-                $("#TemplateList").html(response);
+                $("#TemplateList").html(message);
             }
         });
         return false;
@@ -113,23 +113,29 @@
         var files = [];
         $("#publications tbody tr").each(function (i, v) {
             //var data = ;
-            var file = $(v).find(".fieldvalue").get(0).files[0];
-            if (file != null) {
-                files.push({
-                    Name: $(v).find(".fieldname").html(),
-                    File: file
-                });
+            if ($(v).find(".fieldvalue").prop("type") == "file") {
+                var file = $(v).find(".fieldvalue").get(0).files[0];
+                if (file != null) {
+                    files.push({
+                        Name: $(v).find(".fieldname").html(),
+                        File: file
+                    });
+                }
             }
+            else
+            {
+                var fieldValue = {
+                    FieldType: $(v).find(".fieldtype").html(),
+                    Name: $(v).find(".fieldname").html(),
+                    Value: $(v).find(".fieldvalue").val(),
+                    isChecked: $(v).find(".fieldvalue").is(":checked"),
+                    //FileInformation: data
+                };
+                FieldsValue.push(fieldValue);
+            }
+            });
 
-            var fieldValue = {
-                FieldType: $(v).find(".fieldtype").html(),
-                Name: $(v).find(".fieldname").html(),
-                Value: $(v).find(".fieldvalue").val(),
-                isChecked: $(v).find(".fieldvalue").is(":checked"),
-                //FileInformation: data
-            };
-            FieldsValue.push(fieldValue);
-        });
+
         var Authors = [];
         $("#Authors tbody tr").each(function (i, v) {
             var author = {
@@ -156,14 +162,15 @@
 
         var form = new FormData();
         form.append("BranchesOfKnowledge", JSON.stringify(BranchesOfKnowledge));
-        //TODO: authors and fieldsvalues in the same way
+        form.append("Authors", JSON.stringify(Authors));
+        form.append("FieldsValue", JSON.stringify(FieldsValue));
         form.append("Title", PublicationVM.Title);
         form.append("TemplateId", PublicationVM.TemplateId);
         $(files).each(function (i, fileInfo) {
             form.append(fileInfo.Name, fileInfo.File)
         });
-
-        /*for (var pair of form.entries()) {
+        //cosnole.log(files);
+/*        for (var pair of form.entries()) {
             console.log(pair[0] + ', ' + pair[1]);
         }*/
         //return PublicationVM;

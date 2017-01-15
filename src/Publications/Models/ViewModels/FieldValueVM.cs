@@ -13,6 +13,10 @@ namespace Publications.Models.ViewModels
         public string Name { get; set; }
         public string Value { get; set; }
         public bool isChecked { get; set; }
-        public IFormFile FileInformation { get; set; }
+    }
+    public class FileProperties
+    {
+        public string FileName { get; set; }
+        public string FilePath { get; set; }
     }
 }

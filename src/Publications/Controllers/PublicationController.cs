@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Publications.Services;
 using Publications.Models.Entities;
 using Publications.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Publications.Models;
 
 namespace Publications.Controllers
 {
@@ -58,26 +61,50 @@ namespace Publications.Controllers
                 Id = savePublicationString.Id,
                 TemplateId = savePublicationString.TemplateId,
                 Title = savePublicationString.Title,
-                BranchesOfKnowledge = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BranchOfKnowledge>>(savePublicationString.BranchesOfKnowledge)
-                //TODO: authors and field values in the same way
+                BranchesOfKnowledge = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BranchOfKnowledge>>(savePublicationString.BranchesOfKnowledge),
+                Authors = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Author>>(savePublicationString.Authors),
+                FieldsValue = Newtonsoft.Json.JsonConvert.DeserializeObject<List<FieldValueVM>>(savePublicationString.FieldsValue)
+
             }; //TODO move mapping to service (or not move :D)
-            foreach(var file in Request.Form.Files)
+            foreach (var file in Request.Form.Files)
             {
-                //there are all files, Name propery is the name of file type field
-                //TODO: save and move foreach loop to save service method
+                if (file.Length > 0)
+                {
+                    string path = @"PublicationsFiles\" + Guid.NewGuid();
+                    string name = file.FileName;
+                    FileProperties fileProperties = new FileProperties() { FilePath = path, FileName = name };
+                    if (!Directory.Exists("PublicationsFiles"))
+                    {
+                        Directory.CreateDirectory("PublicationsFiles");
+                    }
+                    using (FileStream fs = System.IO.File.Create(path))
+                    {
+                        file.CopyTo(fs);
+                    }
+                    FieldValueVM fieldValue = new FieldValueVM() { FieldType = FieldType.File, Name = file.Name, Value = Newtonsoft.Json.JsonConvert.SerializeObject(fileProperties), isChecked = false };
+                    savePublication.FieldsValue.Add(fieldValue);
+                }
+                
             }
             bool isDone = publicationService.AddPublication(savePublication);
             if (isDone)
             {
-                return Json(new { success = true, message = "Zapisano pomyœlnie!" });
+                return Json(new { success = true, message = "Zapisano pomy?lnie!" });
             }
             else
             {
-                return Json(new { success = false, message = "Wyst¹pi³ b³¹d w zapisie!" });
+                return Json(new { success = false, message = "Wyst?pi? b??d w zapisie!" });
             }
 
         }
-
+        public FileResult download(int? FieldViewId)
+        {
+            FileProperties fileProperties = publicationService.GetFileInformationById(FieldViewId);
+            string fileName = fileProperties.FileName;
+            string filePath = fileProperties.FilePath;
+            string fileText = System.IO.File.ReadAllText(filePath);
+            return File(fileText, "application/x-msdownload", fileName);
+        }
         [HttpPost]
         public IActionResult Remove(int id)
         {

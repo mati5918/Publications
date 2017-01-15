@@ -1,10 +1,45 @@
 ﻿@model Publications.Models.ViewModels.FieldValueVM
 
+@if (Model.FieldType != FieldType.File)
+{
 <tr>
-    <td>
+    <td class="col-sm-2">
         @Html.DisplayFor(modelItem => Model.Name)
     </td>
-    <td>
+    <td class="col-sm-2">
         @Html.DisplayFor(modelItem => Model.Value)
     </td>
 </tr>
+}
+else
+{
+    <tr>
+        <td class="col-sm-2">
+            @Html.DisplayFor(modelItem => Model.Name)
+        </td>
+        <td class="col-sm-2">
+            <input type="submit" value="Pobierz" class="btn btn-default glyphicon-download downloadBtn" />
+        </td>
+    </tr>
+}
+
+<script type="text/javascript">
+    $(".downloadBtn").click(function () {
+        var id = {
+            FieldViewId: @Model.FieldId
+    };
+        alert(JSON.stringify(id));
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "@Url.Action("download")",
+            data: id,
+            success: function (response) {
+                alert(JSON.stringify(response));
+            }
+        }).done(function (response) {
+            alert(JSON.stringify(response));
+        })
+        });
+</script>

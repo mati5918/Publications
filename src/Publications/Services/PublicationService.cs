@@ -236,5 +236,18 @@ namespace Publications.Services
         {
             return (from b in db.BranchOfKnowledges where b.Name == branch.Name select b).ToList()[0];
         }
+        public FileProperties GetFileInformationById(int? fieldValueId)
+        {
+            try
+            {
+                FieldValue fv = (from f in db.FieldValues where f.FieldValueId == fieldValueId select f).ToList()[0];
+                return Newtonsoft.Json.JsonConvert.DeserializeObject<FileProperties>(fv.Value);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+            
+        }
     }
 }
