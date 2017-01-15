@@ -98,6 +98,20 @@
                     </td>
                 </tr>
                 break;
+             case FieldType.Select:
+                <tr>
+                    <td>
+                        <p class="fieldname">@item.Name</p>
+                    </td>
+                    <td>
+                        <p class="fieldtype">@item.FieldType</p>
+                    </td>
+                    <td>
+                        @inject Publications.Services.FieldsProvider fieldsProvider
+                        <select class="form-control fieldvalue" asp-items="fieldsProvider.GetSelectValues(item.Name)"></select>
+                    </td>
+                </tr>
+                break;
             default:
                 break;
         }

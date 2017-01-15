@@ -35,5 +35,38 @@ namespace Publications.Services
             }
             return res;
         }
+
+        public IEnumerable<SelectListItem> GetSelectValues(string name)
+        {
+            List<SelectListItem> res = new List<SelectListItem>();
+            var select = context.PublicationFields.FirstOrDefault(f => f.Name == name);
+            if(select != null)
+            {
+                Dictionary<int, string> fieldData = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, string>>(select.FieldData);
+                if (fieldData != null)
+                {
+                    foreach (var item in fieldData)
+                    {
+                        res.Add(new SelectListItem {Value = item.Key.ToString(), Text = item.Value});
+                    }
+                }
+            }
+            return res;
+        }
+
+        public string GetSelectValue(string name, int value)
+        {
+            string res = string.Empty;
+            var select = context.PublicationFields.FirstOrDefault(f => f.Name == name);
+            if (select != null)
+            {
+                Dictionary<int, string> fieldData = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, string>>(select.FieldData);
+                if (fieldData != null)
+                {
+                    fieldData.TryGetValue(value, out res);
+                }
+            }
+            return res ?? string.Empty;
+        }
     }
 }
