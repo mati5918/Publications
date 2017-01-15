@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Publications.Services;
 using Publications.Models.ViewModels;
 using Publications.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Publications.Controllers
 {
@@ -22,13 +23,13 @@ namespace Publications.Controllers
         {
             return View(service.GetAllTemplates());
         }
-
+        [Authorize]
         public IActionResult Add()
         {
             ViewBag.IsNewTemplate = true;
             return View("Details", new TemplateVM { TemplateId = -1, IsActive = true });
         }
-
+        [Authorize]
         public IActionResult AddField()
         {
             return PartialView("TemplateRow", new FieldVM() { AttachId = -1});
@@ -45,14 +46,14 @@ namespace Publications.Controllers
             ViewBag.IsNewTemplate = false;
             return View(vm);
         }
-
+        [Authorize]
         public IActionResult CopyTemplate(int id)
         {
             ViewBag.IsCopy = true;
             ViewBag.IsNewTemplate = true;
             return View("Details", service.CopyTemplate(id));
         }
-
+        [Authorize]
         [HttpPost]
         public IActionResult AddNewField([FromBody] AddFieldVM vm)
         {
@@ -74,7 +75,7 @@ namespace Publications.Controllers
             }
             
         }
-
+        [Authorize]
         [HttpPost]
         public IActionResult Save([FromBody] SaveTemplateVM vm)
         {
@@ -92,7 +93,7 @@ namespace Publications.Controllers
                 return Json(new { success = false, message = "Wyst¹pi³ b³¹d w zapisie!" });
             }
         }
-
+        [Authorize]
         [HttpPost]
         public IActionResult Remove(int id)
         {

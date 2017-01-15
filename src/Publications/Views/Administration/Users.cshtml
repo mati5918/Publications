@@ -6,7 +6,6 @@
 }
 
 <h2>Użytkownicy</h2>
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 
 <table class="table templates-table table-striped" id="userTable">
     <thead>
@@ -16,7 +15,7 @@
                 @Html.DisplayNameFor(model => model.Email)
             </th>
 
-            <th>
+            <th class="nosort">
                 @Html.DisplayNameFor(model => model.isAdmin)
             </th>
             <th class="nosort"></th>
@@ -49,49 +48,8 @@
         }
     </tbody>
 </table>
-<style>
-    .even{
-        background-color:black !important
-    }
-</style>
 @section scripts{
-    
-   @* <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>*@
-   <script type="text/javascript">
-       $(document).ready(function () {
-          
-
-           $("#userTable").DataTable({
-               language: {
-                   "processing": "Przetwarzanie...",
-                   "search": "Szukaj:",
-                   "lengthMenu": "Pokaż _MENU_ pozycji",
-                   "info": "Pozycje od _START_ do _END_ z _TOTAL_ łącznie",
-                   "infoEmpty": "Pozycji 0 z 0 dostępnych",
-                   "infoFiltered": "(filtrowanie spośród _MAX_ dostępnych pozycji)",
-                   "infoPostFix": "",
-                   "loadingRecords": "Wczytywanie...",
-                   "zeroRecords": "Nie znaleziono pasujących pozycji",
-                   "emptyTable": "Brak danych",
-                   "paginate": {
-                       "first": "Pierwsza",
-                       "previous": "Poprzednia",
-                       "next": "Następna",
-                       "last": "Ostatnia"
-                   },
-                   "aria": {
-                       "sortAscending": ": aktywuj, by posortować kolumnę rosnąco",
-                       "sortDescending": ": aktywuj, by posortować kolumnę malejąco"
-                   }
-               },
-               aoColumnDefs: [{
-                   'bSortable': false,
-                   'aTargets': ['nosort']
-               }]
-           });
-       });
-    </script>
-
+    <script src="~/js/dataTableTranslation.js"></script>
     <script>
         $(".addAdminBtn").click(function () {
             userId = $(this).attr("data-id");
@@ -114,7 +72,6 @@
                 }
             });
         });
-
         $(".removeUserBtn").click(function () {
             userId = $(this).attr("data-id");
             bootbox.confirm({

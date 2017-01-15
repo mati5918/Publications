@@ -1,11 +1,14 @@
-﻿@model Publications.Models.ViewModels.TemplateVM
+﻿@using Microsoft.AspNetCore.Identity
+@using Publications.Models.Entities
+@model Publications.Models.ViewModels.TemplateVM
 @inject Publications.Services.FieldsProvider fieldsProvider
+@inject SignInManager<ApplicationUser> SignInManager
 @{
     string title = ViewBag.IsNewTemplate ? "Nowy szablon" : "Edycja szablonu";
     bool isCopy = ViewBag.IsCopy != null && ViewBag.isCopy;
     bool hasPublications = Model.PublicationsCount > 0;
     ViewData["Title"] = title;
-    //var selectsData = fieldsProvider.GetSelectValues();    
+    //var selectsData = fieldsProvider.GetSelectValues();
 }
 
 <div class="row">
@@ -14,7 +17,15 @@
     </div>
     <div class="col-sm-8">
         <div class="pull-right">
-            <button class="btn btn-primary " id="btnSave" style="margin-top:20px;"><span class="glyphicon glyphicon-save"></span> Zapisz</button>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <button class="btn btn-primary" id="btnSave" style="margin-top:20px;"><span class="glyphicon glyphicon-save"></span> Zapisz</button>
+            }
+            else
+            {
+                <button class="btn btn-primary"  id="btnSave" style="margin-top:20px;" disabled><span class="glyphicon glyphicon-save"></span> Zapisz</button>
+            }
+
         </div>
     </div>
 </div>
@@ -32,7 +43,7 @@
     <div class="row readOnlyAlert">
         <div class="alert alert-warning col-sm-12">
             <strong>
-                Istnieją publikacje korzystające z szablonu. Szablonu nie można edytować. Można utworzyć jego 
+                Istnieją publikacje korzystające z szablonu. Szablonu nie można edytować. Można utworzyć jego
                 <a asp-action="CopyTemplate" asp-route-id="@Model.TemplateId">kopię</a>.
             </strong>
         </div>
@@ -47,7 +58,7 @@
 
 <div>
     <form class="form-horizontal">
-        <input asp-for="TemplateId" id="templateId" hidden/>
+        <input asp-for="TemplateId" id="templateId" hidden />
         <div class="form-group">
             <div class="col-sm-1">
                 <label class="control-label">Nazwa:</label>
@@ -71,9 +82,9 @@
                 <label class="control-label">Aktywny:</label>
             </div>
             <div class="col-sm-10">
-                <input type="checkbox" asp-for="IsActive" class="form-control checkbox" style="width:auto;"  id="isActive"/>
+                <input type="checkbox" asp-for="IsActive" class="form-control checkbox" style="width:auto;" id="isActive" />
             </div>
-        </div>       
+        </div>
     </form>
 </div>
 <br />
@@ -88,8 +99,16 @@
     </div>
     <div class="col-sm-6">
         <div class="pull-right">
-            <button class="btn btn-success" style="width:180px; margin-top:20px;" id="addField"><span class="glyphicon glyphicon-plus"></span> Dodaj istniejace pole</button>
-            <button class="btn btn-info " style="width:180px; margin-top:20px;"  id="addNewFieldModal"><span class="glyphicon glyphicon-plus"> </span> Dodaj nowe pole</button>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <button class="btn btn-success" style="width:180px; margin-top:20px;" id="addField"><span class="glyphicon glyphicon-plus"></span> Dodaj istniejace pole</button>
+                <button class="btn btn-info " style="width:180px; margin-top:20px;" id="addNewFieldModal"><span class="glyphicon glyphicon-plus"> </span> Dodaj nowe pole</button>
+            }
+            else
+            {
+                <button class="btn btn-success" disabled style="width:180px; margin-top:20px;" id="addField"><span class="glyphicon glyphicon-plus"></span> Dodaj istniejace pole</button>
+                <button class="btn btn-info" disabled style="width:180px; margin-top:20px;" id="addNewFieldModal"><span class="glyphicon glyphicon-plus"> </span> Dodaj nowe pole</button>
+            }
         </div>
     </div>
 </div>
@@ -107,7 +126,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach(var field in Model.Fields)
+                @foreach (var field in Model.Fields)
                 {
                     Html.RenderPartial("TemplateRow", field);
                 }
@@ -156,7 +175,7 @@
                     <div id="selectValues" hidden>
                         <div class="row">
                             <div class="col-sm-2">
-                                <label class="control-label">Wartości:</label>                               
+                                <label class="control-label">Wartości:</label>
                             </div>
                             <div class="col-sm-6">
                                 <button class="btn btn-info pull-right" type="button" id="addSelectValue"><span class="glyphicon glyphicon-plus"></span></button>
@@ -167,7 +186,7 @@
                                 <label class="control-label selectValueLabel">1.</label>
                             </div>
                             <div class="col-sm-6">
-                                <input class="form-control selectValue" />                              
+                                <input class="form-control selectValue" />
                             </div>
                             <div class="col-sm-1" style="padding-top:10px;">
                                 <span class="glyphicon glyphicon-remove glyph-button removeSelectValue"></span>
@@ -189,7 +208,11 @@
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
         renumerateTableRows();
-        setSaveTemplateButtonEnabled();
+         @if (SignInManager.IsSignedIn(User))
+         {
+             @:setSaveTemplateButtonEnabled();
+         }
+         
         var hasPublications = '@hasPublications' == "True";
         console.log(hasPublications);
         if (hasPublications) {
@@ -256,7 +279,8 @@
                         $("#templateId").val(response.id);
                         $(".copyAlert").hide();
                         console.log(response.id);
-                    } else {
+                    }
+                    else {
                         $(".alertContainer .alert").removeClass("alert-success");
                         $(".alertContainer .alert").addClass("alert-danger");
                     }
@@ -311,7 +335,7 @@
                     if (fieldId == -1) {
                         $("tbody").append(response);
                         renumerateTableRows();
-                    } 
+                    }
                     var newSelect = $($(response)).find(".fieldId");
                     refreshSelects(newSelect, vm.Type);
                     $('select').select2({
@@ -332,7 +356,7 @@
             if ($(this).val() == 6) {
                 $(".selectValuesLine").not(':first').remove();
                 $(".selectValuesLine").find(".removeSelectValue").show();
-                $("#selectValues").show();             
+                $("#selectValues").show();
             } else {
                 $("#selectValues").hide();
             }
@@ -353,7 +377,7 @@
             $(newLine).find(".removeSelectValue").show();
             $("#selectValues").append(newLine);
             $(".selectValueLabel").each(function (i, v) {
-                $(v).text(i+1+".");
+                $(v).text(i + 1 + ".");
             });
             setSaveFieldButtonEnabled();
         });
@@ -392,7 +416,7 @@
                 $.ajax({
                     url: "@Url.Action("GetSelectFieldValues", new { id = "id"})".replace("id", fieldId),
                     type: "POST",
-                    success: function (response) {                   
+                    success: function (response) {
                         for (var i = 0; i < response.length; i++) {
                             if (i == 0) {
                                 $(".selectValuesLine").find(".selectValue").first().val(response[i]);

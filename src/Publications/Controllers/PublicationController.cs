@@ -9,9 +9,11 @@ using Publications.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Publications.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Publications.Controllers
 {
+    [Authorize]
     public class PublicationController : Controller
     {
         PublicationService publicationService;
@@ -19,11 +21,13 @@ namespace Publications.Controllers
         {
             this.publicationService = publicationService;
         }
+        [AllowAnonymous]
         public IActionResult PublicationList()
         {
             var publicationList = publicationService.GetAllPublications();
             return View(publicationList);
         }
+        [AllowAnonymous]
         public IActionResult Details(int? publicationId)
         {
             Publication publication = publicationService.GetPublicationById(publicationId);
@@ -44,7 +48,7 @@ namespace Publications.Controllers
         {
             return PartialView("BranchRow");
         }
-
+        
         public IActionResult AddPublication()
         {
             return View(new SavePublicationVM());
