@@ -46,50 +46,57 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.PublicationsCount)
-        </dd>
-        <dt>
-            Procent wszystkich:
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PercentOfAllPublications)
-        </dd>
-        <dt>
-            Publikacje/galaz wiedzy:
-        </dt>
-        <dd>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>
-                        Dziedzina wiedzy
-                    </th>
-                    <th>
-                        Publikacje
-                    </th>
-                    <th>
-                        Procent publikacji
-                    </th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var item in Model.PublicationsPerKonwledgeBranch)
-                {
+        </dd> 
+        
+        @if (Model.PercentOfAllPublications != -1)
+        {
+            <dt>
+                Procent wszystkich:
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.PercentOfAllPublications)
+            </dd>
+        }
+        @if (Model.PublicationsPerKonwledgeBranch.Any())
+        {
+            <dt>
+                Publikacje/galaz wiedzy:
+            </dt>
+            <dd>
+                <table class="table">
+                    <thead>
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.KnowledgeBranchName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.PublicationsCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.PublicationsPercentage)%
-                        </td>
+                        <th>
+                            Dziedzina wiedzy
+                        </th>
+                        <th>
+                            Publikacje
+                        </th>
+                        <th>
+                            Procent publikacji
+                        </th>
+                        <th></th>
                     </tr>
-                }
-                </tbody>
-            </table>
-        </dd>   
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.PublicationsPerKonwledgeBranch)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.KnowledgeBranchName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PublicationsCount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PublicationsPercentage)%
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </dd>
+        }  
 
     </dl> 
     @using (Html.BeginForm("SaveToPdf", "Statistics", FormMethod.Post, new { id = "formPdf" }))

@@ -74,7 +74,7 @@ namespace Publications.Services
                 KnowledgeBranchName =branchOfKnowledge.Name, 
                 PercentOfAllPublications = 100*publications.Count()/(double)allPublicationsCount, 
                 PublicationsCount = publications.Count(),
-                PublicationsPerKonwledgeBranch = null,
+                PublicationsPerKonwledgeBranch = new List<PublicationsPerKnowledgeBranch>(),
                 TimeAmount = $"Od {startOfTimeAmount:d} do {endOfTimeAmount:d}",
                 
             };
@@ -101,7 +101,7 @@ namespace Publications.Services
               KnowledgeBranchName = null,
               PercentOfAllPublications = 100*publications.Count()/(double)allPublicationsCount,  
               PublicationsCount = publications.Count(),  
-              PublicationsPerKonwledgeBranch = CalculatePublicationsPerKnowledgeBranch(publications),
+              PublicationsPerKonwledgeBranch = GetPublicationsPerKnowledgeBranch(publications),
               TimeAmount = $"Od {startOfTimeAmount:d} do {endOfTimeAmount:d}",
               
             };
@@ -123,9 +123,9 @@ namespace Publications.Services
             {
                 AuthorName = null,
                 KnowledgeBranchName = null, 
-                PercentOfAllPublications = 100*publications.Count()/(double)allPublicationsCount,
+                PercentOfAllPublications = -1,
                 PublicationsCount = publications.Count(),
-                PublicationsPerKonwledgeBranch = CalculatePublicationsPerKnowledgeBranch(publications),
+                PublicationsPerKonwledgeBranch = GetPublicationsPerKnowledgeBranch(),
                 TimeAmount = $"Od {startOfTimeAmount:d} do {endOfTimeAmount:d}",
                 
 
@@ -155,7 +155,7 @@ namespace Publications.Services
                 KnowledgeBranchName =branchOfKnowledge.Name,
                 PercentOfAllPublications = publications.Count()/(double)allPublicationsCount,
                 PublicationsCount = publications.Count(),
-                PublicationsPerKonwledgeBranch = null,
+                PublicationsPerKonwledgeBranch = new List<PublicationsPerKnowledgeBranch>(),
                 TimeAmount = $"Od {startOfTimeAmount:d} do {endOfTimeAmount:d}",
                 
 
@@ -165,7 +165,7 @@ namespace Publications.Services
             return result;
         }
 
-        private List<PublicationsPerKnowledgeBranch> CalculatePublicationsPerKnowledgeBranch(IQueryable<Publication> publications)
+        private List<PublicationsPerKnowledgeBranch> GetPublicationsPerKnowledgeBranch(IQueryable<Publication> publications)
         {
             var knowledgeBranches = _context.BranchOfKnowledges;
             var result=new List<PublicationsPerKnowledgeBranch>();
@@ -176,6 +176,26 @@ namespace Publications.Services
                     KnowledgeBranchName = branchOfKnowledge.Name,
                     PublicationsCount = publications.Count(p =>p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)),
                     PublicationsPercentage = 100 * publications.Count(p => p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)) / (double)_context.Publications.Count(p => p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId))
+                };
+
+                if (item.PublicationsCount != 0)
+                    result.Add(item);
+            }
+            return result;
+        }
+
+        private List<PublicationsPerKnowledgeBranch> GetPublicationsPerKnowledgeBranch()
+        {
+            var knowledgeBranches = _context.BranchOfKnowledges;
+            var result=new List<PublicationsPerKnowledgeBranch>();
+            var publications = _context.Publications;
+            foreach (var branchOfKnowledge in knowledgeBranches)
+            {
+                var item = new PublicationsPerKnowledgeBranch
+                {
+                    KnowledgeBranchName = branchOfKnowledge.Name,
+                    PublicationsCount = publications.Count(p =>p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)),
+                    PublicationsPercentage = 100 * publications.Count(p => p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)) / (double)_context.Publications.Count()
                 };
                 
                  result.Add(item);

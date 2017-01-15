@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using OfficeOpenXml;
 using Publications.Models.Statistisc;
 
@@ -42,7 +43,11 @@ namespace Publications.Helpers
                     worksheet.Cells[1, i].Value = "Okres czasu";
                 }
                 worksheet.Cells[1, i+1].Value = "Ilość publikacji";
-                worksheet.Cells[1, i+2].Value = "Procent wszystkich publikacji";
+                if (data.PercentOfAllPublications != -1)
+                {
+                    worksheet.Cells[1, i + 2].Value = "Procent wszystkich publikacji";
+                    i++;
+                }
                 if (data.PublicationsPerKonwledgeBranch != null)
                     worksheet.Cells[1, i+3].Value = "Publikacje/dziedzina wiedzy";
 
@@ -66,8 +71,11 @@ namespace Publications.Helpers
                     worksheet.Cells[2, i].Value = data.TimeAmount;
                 }
                 worksheet.Cells[2, i + 1].Value = data.PublicationsCount;
-                worksheet.Cells[2, i + 2].Value = data.PercentOfAllPublications;
-                if (data.PublicationsPerKonwledgeBranch != null)
+                if (data.PercentOfAllPublications != -1)
+                {
+                    worksheet.Cells[2, i + 2].Value = data.PercentOfAllPublications;
+                }
+                if (data.PublicationsPerKonwledgeBranch.Any())
                 {
                     for (int j = 0; j < data.PublicationsPerKonwledgeBranch.Count; j++)
                     {
