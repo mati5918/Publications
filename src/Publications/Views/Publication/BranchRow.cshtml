@@ -1,12 +1,19 @@
-@model Publications.Models.Entities.BranchOfKnowledge
+﻿@model Publications.Models.Entities.BranchOfKnowledge
 
 <tr>
-    <td>
-        <input class="form-control name" width="40" />
+    <td class="col-md-8">
+        <input class="form-control name" />
     </td>
-    <td>
-        <span class="glyphicon glyphicon-plus glyph-button AddBranch"></span>&nbsp; &nbsp;
-        <span class="glyphicon glyphicon-remove RemoveBranch" style="display:none;"></span>
+    <td class="col-md-4">
+       
+        <button type="button" class="btn btn-success AddBranch">
+            <span class="glyphicon glyphicon-plus"></span> Dodaj pole
+        </button>
+
+        <button type="button" class="btn btn-danger RemoveBranch" style="display:none;">
+            <span class="glyphicon glyphicon-remove "></span> Usuń pole
+        </button>
+       
     </td>
 </tr>
 <script type="text/javascript">
@@ -15,8 +22,8 @@
             url: "@Url.Action("BranchRow")",
             type: "GET",
             success: function (response) {
-                $(".AddAuthor").hide();
-                $(".RemoveAuthor").show();
+                $(".AddBranch").hide();
+                $(".RemoveBranch").show();
                 $("#Branches").append(response);
             }
         });
