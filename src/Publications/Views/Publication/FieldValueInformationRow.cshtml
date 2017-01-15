@@ -25,14 +25,10 @@ else
 
 <script type="text/javascript">
     $(".downloadBtn").click(function () {
-        var id = {
-            FieldViewId: @Model.FieldId
-    };
-        alert(JSON.stringify(id));
-        $.ajax({
+        window.location.href = "@Url.Action("download", "Publication", new { FieldViewId = Model.FieldId})";
+        //alert(JSON.stringify(id));
+        @*$.ajax({
             type: "GET",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
             url: "@Url.Action("download")",
             data: id,
             success: function (response) {
@@ -41,5 +37,6 @@ else
         }).done(function (response) {
             alert(JSON.stringify(response));
         })
-        });
+        });*@
+    });
 </script>

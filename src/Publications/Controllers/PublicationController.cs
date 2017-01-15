@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using Publications.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.StaticFiles;
+using System.Text;
 
 namespace Publications.Controllers
 {
@@ -104,10 +106,13 @@ namespace Publications.Controllers
         public FileResult download(int? FieldViewId)
         {
             FileProperties fileProperties = publicationService.GetFileInformationById(FieldViewId);
-            string fileName = fileProperties.FileName;
+          string fileName = fileProperties.FileName;
             string filePath = fileProperties.FilePath;
             string fileText = System.IO.File.ReadAllText(filePath);
-            return File(fileText, "application/x-msdownload", fileName);
+            string contentType;
+            new FileExtensionContentTypeProvider().TryGetContentType(filePath, out contentType);
+            FileResult fr = File(Encoding.UTF8.GetBytes(fileText), "application/pdf", fileName);
+            return fr;
         }
         [Authorize(Roles = "Admin")]
         [HttpPost]
