@@ -23,6 +23,7 @@ namespace Publications.Models.ViewModels
         public int Id { get; set; }
         public string Title { get; set; }
         public int TemplateId { get; set; }
+        public bool isExist { get; set; }
         public List<FieldValueVM> FieldsValue{ get; set; } 
         public List<Author> Authors { get; set; }
         public List<BranchOfKnowledge> BranchesOfKnowledge { get; set; }

@@ -2,10 +2,11 @@
 
 <tr>
     <td class="col-md-8">
-        <input class="form-control name" />
+        <input class="form-control name" value="@Model.Name" />
     </td>
     <td class="col-md-4">
-       
+       @if (Model.BranchOfKnowledgeId == 0)
+       {
         <button type="button" class="btn btn-success AddBranch">
             <span class="glyphicon glyphicon-plus"></span> Dodaj pole
         </button>
@@ -13,7 +14,18 @@
         <button type="button" class="btn btn-danger RemoveBranch" style="display:none;">
             <span class="glyphicon glyphicon-remove "></span> Usuń pole
         </button>
-       
+       }
+       else
+       {
+        <button type="button" class="btn btn-success AddBranch"  style="display:none;">
+            <span class="glyphicon glyphicon-plus"></span> Dodaj pole
+        </button>
+
+        <button type="button" class="btn btn-danger RemoveBranch">
+            <span class="glyphicon glyphicon-remove "></span> Usuń pole
+        </button>
+
+       }
     </td>
 </tr>
 <script type="text/javascript">

@@ -1,11 +1,13 @@
 ﻿@model Publications.Models.ViewModels.SavePublicationVM
 
 @{
-    ViewData["Title"] = "Dodaj publikację";
+    ViewData["Title"] = !Model.isExist ? "Dodaj publikację" : "Edytuj publikację";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    bool k = Model.isExist;
+    string ButtonText = k ? "Edytuj publikację" : "Dodaj publikację do bazy";
+    
 }
 <h3>
-    Nowa publikacja
     <button class="btn btn-primary pull-right" type="button"
             onclick="location.href='@Url.Action("PublicationList")'">
         Lista publikacji
@@ -30,7 +32,17 @@
                 </td>
                 <td>
                     <table id="Branches">
-                        <tbody></tbody>
+                        <tbody>
+                            @if (Model.isExist)
+                            {
+                                @foreach (var item in Model.BranchesOfKnowledge)
+                                {
+                                    @Html.Partial("BranchRow", item);
+                                }
+                            }
+                            @Html.Partial("BranchRow", new Publications.Models.Entities.BranchOfKnowledge())
+                            
+                        </tbody>
                     </table>
                 </td>
             </tr>
@@ -56,7 +68,16 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                    @if (Model.isExist)
+                    {
+                        @foreach (var item in Model.Authors)
+                        {
+                            @Html.Partial("AuthorRow", item);
+                        }
+                    }
+                    @Html.Partial("AuthorRow", new Publications.Models.Entities.Author()) 
+                </tbody>
             </table>
         </div>
 
@@ -71,7 +92,7 @@
 
         <div class="form-group">
             <div class="col-md-10">
-                <input type="submit" value="Dodaj publikację do bazy" class="btn btn-success pull-right" id="Createbtn" />
+                <input type="submit" value="@ButtonText" class="btn btn-success pull-right" id="Createbtn" />
 
             </div>
         </div>
@@ -82,11 +103,19 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        var True = true;
+        var False = false;
+        var isExist = @Model.isExist;
         $.ajax({
             url: "@Url.Action("ShowTemplatesList")",
             type: "GET",
             success: function (response) {
                 $("#TemplateList").html(response);
+                $('#PublicationTemplate').val(@Model.TemplateId);
+                $('#PublicationTemplate').change();
+                if (isExist) {
+                    $('#PublicationTemplate').prop("disabled", true);
+                }
             }
         });
         $.ajax({
@@ -103,6 +132,8 @@
                 $("#Branches").append(response);
             }
         });
+        
+        
     });
     $("#Createbtn").click(function () {
         var data = collectPublicationData();
@@ -114,8 +145,6 @@
             data: data,
             success: function (message) {
                 $("#TemplateList").html(message)
-
-
                 bootbox.alert("Dodano publikację do bazy");
             }
         });
@@ -151,19 +180,23 @@
 
         var Authors = [];
         $("#Authors tbody tr").each(function (i, v) {
-            var author = {
-                AcademicDegree: $(v).find(".degree").val(),
-                FirstName: $(v).find(".firstname").val(),
-                SecondName: $(v).find(".secondname").val()
-            };
-            Authors.push(author);
+            if ($(v).find(".firstname").val() != "") {
+                var author = {
+                    AcademicDegree: $(v).find(".degree").val(),
+                    FirstName: $(v).find(".firstname").val(),
+                    SecondName: $(v).find(".secondname").val()
+                };
+                Authors.push(author);
+            }
         });
         var BranchesOfKnowledge = [];
         $("#Branches tbody tr").each(function (i, v) {
-            var branch = {
-                Name: $(v).find(".name").val(),
-            };
-            BranchesOfKnowledge.push(branch);
+            if ($(v).find(".name").val() != "") {
+                var branch = {
+                    Name: $(v).find(".name").val(),
+                };
+                BranchesOfKnowledge.push(branch);
+            }
         });
         var PublicationVM = {
             BranchesOfKnowledge: BranchesOfKnowledge,

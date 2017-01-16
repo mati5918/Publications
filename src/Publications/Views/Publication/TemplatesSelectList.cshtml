@@ -1,8 +1,8 @@
-﻿@model IEnumerable<Publications.Models.Entities.PublicationTemplate>
+﻿@model Publications.Models.ViewModels.TemplateFieldValueVM
 
 @{
     var templates = new List<SelectListItem>();
-    foreach (Publications.Models.Entities.PublicationTemplate item in Model)
+    foreach (Publications.Models.Entities.PublicationTemplate item in Model.publicationTemplates)
     {
         if (item.IsActive)
         {
@@ -16,6 +16,22 @@
 <div class="col-md-10" id="FieldValueList">
 </div>
 <script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            url: "@Url.Action("FieldValueRow")",
+            type: "GET",
+            data: @Model.FieldValuesVM,
+        data: {
+            templateId: PublicationTemplate.value
+
+        },
+        success: function (response) {
+            $("#FieldValueList").html(response);
+        },
+        error: function() {            
+        }
+    })
+    })
     $("#PublicationTemplate").change(function () {
         $.ajax({
             url: "@Url.Action("FieldValueRow")",

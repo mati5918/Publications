@@ -37,10 +37,14 @@ namespace Publications.Controllers
             return View(publicationVM);
         }
 
-        public IActionResult FieldValueRow(int templateId)
+        public IActionResult FieldValueRow(List<FieldValueVM> fv, int? templateId)
         {
-            IEnumerable<FieldValueVM> fieldValues = publicationService.GenerateNewFieldValue(templateId);
-            return PartialView(fieldValues);
+            IEnumerable<FieldValueVM> fieldValues;
+            if (fv != null)
+                fieldValues = publicationService.GenerateNewFieldValue(templateId);
+            else {
+            }
+            return PartialView(fv);
         }
         public IActionResult AuthorRow()
         {
@@ -53,11 +57,25 @@ namespace Publications.Controllers
 
         public IActionResult AddPublication()
         {
-            return View(new SavePublicationVM());
+            return View(new SavePublicationVM() { isExist = false });
         }
-        public IActionResult ShowTemplatesList()
+        public IActionResult EditPublication(int? publicationId)
         {
-            return PartialView("TemplatesSelectList", publicationService.GetAllPublicationTemplate());
+            SavePublicationVM sp = publicationService.GetSavePublicationVMById(publicationId);
+            if (sp != null)
+            {
+                sp.isExist = true;
+                return View("AddPublication", sp);
+            }
+            else
+            {
+                return Json("publication: notexist");
+            }
+        }
+        public IActionResult ShowTemplatesList(List<FieldValueVM> fv)
+        {
+            TemplateFieldValueVM tfv = new TemplateFieldValueVM() { FieldValuesVM = fv, publicationTemplates = publicationService.GetAllPublicationTemplate().ToList() };
+            return PartialView("TemplatesSelectList", tfv);
         }
         [HttpPost]
         public IActionResult Add(SavePublicationStringVM savePublicationString)

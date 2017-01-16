@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Publications.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,10 @@ namespace Publications.Models.ViewModels
     {
         public string FileName { get; set; }
         public string FilePath { get; set; }
+    }
+    public class TemplateFieldValueVM
+    {
+        public List<PublicationTemplate> publicationTemplates { get; set; }
+        public List<FieldValueVM> FieldValuesVM { get; set; }
     }
 }

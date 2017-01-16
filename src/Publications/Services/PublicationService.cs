@@ -48,7 +48,7 @@ namespace Publications.Services
         private string GetAuthorById(int id)
         {
             List<Author> authors = (from author in db.Authors where author.AuthorId == id select author).ToList();
-            return authors[0].FirstName + " " + authors[0].SecondName;
+            return authors[0].AcademicDegree.ToString() + " " + authors[0].FirstName + " " + authors[0].SecondName;
         }
         private IEnumerable<string> GetAuthorsOfPublication(int? publicationId)
         {
@@ -193,7 +193,7 @@ namespace Publications.Services
         {
             if (publication != null)
             {
-                return new PublicationVM() { Id = publication.PublicationId, Title = publication.Title, Type = GetTypeOfPublication(publication), CreationDate = publication.CreationDate, FieldValues = GetFieldValueInPublication(publication.PublicationId), Authors = GetAuthorsOfPublication(publication.PublicationId) as List<string>, BrachesOfKnowledge = GetBranchesFromPublication(publication.PublicationId) };
+                return new PublicationVM() { Id = publication.PublicationId, Title = publication.Title, Type = GetTypeOfPublication(publication), CreationDate = publication.CreationDate, FieldValues = GetFieldValueInPublication(publication.PublicationId), Authors = GetAllAuthorsOfPublication(publication.PublicationId) as List<string>, BrachesOfKnowledge = GetBranchesFromPublication(publication.PublicationId) };
             }
             else
             {
@@ -262,6 +262,42 @@ namespace Publications.Services
             {
                 return false;
             }
+        }
+        public SavePublicationVM GetSavePublicationVMById(int? id)
+        {
+            try
+            {
+                Publication pub = (from p in db.Publications where p.PublicationId == id select p).ToList()[0];
+                return ParsePublicationToSavePublicationVM(pub);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
+        }
+        private SavePublicationVM ParsePublicationToSavePublicationVM(Publication pub)
+        {
+            try
+            {
+                List<Author> a = GetAuthorsOfPublication(pub.PublicationId);
+                List<BranchOfKnowledge> b = GetBranchesOfPublication(pub.PublicationId);
+                return new SavePublicationVM() { Id = pub.PublicationId, TemplateId = pub.TemplateId, Title = pub.Title, Authors = a, BranchesOfKnowledge = b};
+            }
+            catch (Exception e)
+            {
+                return new SavePublicationVM();
+            }
+        }
+        private List<Author> GetAuthorsOfPublication(int publicationId)
+        {
+            List<Author> authors = (from p in db.Publications join pa in db.AuthorPublications on p.PublicationId equals pa.PublicationId join a in db.Authors on pa.AuthorId equals a.AuthorId where p.PublicationId == publicationId select a).ToList();
+            return authors;
+        }
+        private List<BranchOfKnowledge> GetBranchesOfPublication(int publicationId)
+        {
+            List<BranchOfKnowledge> branches = (from b in db.BranchOfKnowledges join bp in db.BranchOfKnowledgePublications on b.BranchOfKnowledgeId equals bp.BranchOfKnowledgeId join p in db.Publications on bp.PublicationId equals p.PublicationId where p.PublicationId == publicationId select b).ToList();
+            return branches;
         }
     }
 }

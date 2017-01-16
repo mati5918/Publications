@@ -1,26 +1,42 @@
-﻿<tr>
+﻿@model Publications.Models.Entities.Author
+<tr>
     <td class="col-md-3">
-        <select asp-items="Html.GetEnumSelectList<AcademicDegree>()" class="form-control degree"></select>
+        <select asp-for="AcademicDegree" asp-items="Html.GetEnumSelectList<AcademicDegree>()" class="form-control degree" ></select>
     </td>
     <td class="col-md-3">
-        <input class="form-control firstname" width="40" />
+        <input class="form-control firstname" value="@Model.FirstName" width="40" />
     </td>
     <td class="col-md-3">
-        <input class="form-control secondname" width="40" />
+        <input class="form-control secondname" width="40" value="@Model.SecondName" />
     </td>
     <td class="col-md-3">
-        <button type="button" class="btn btn-success AddAuthor">
-            <span class="glyphicon glyphicon-plus"></span> Dodaj pole
-        </button>
-        <button type="button" class="btn btn-danger RemoveAuthor" style="display:none;">
-            <span class="glyphicon glyphicon-remove "></span> Usuń pole
-        </button>
+        @if (Model.AuthorId == 0)
+        {
+            <button type="button" class="btn btn-success AddAuthor">
+                <span class="glyphicon glyphicon-plus"></span> Dodaj pole
+            </button>
+            <button type="button" class="btn btn-danger RemoveAuthor" style="display:none;">
+                <span class="glyphicon glyphicon-remove "></span> Usuń pole
+            </button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-success AddAuthor" style="display:none;" >
+                <span class="glyphicon glyphicon-plus"></span> Dodaj pole
+            </button>
+            <button type="button" class="btn btn-danger RemoveAuthor" >
+                <span class="glyphicon glyphicon-remove "></span> Usuń pole
+            </button>
+
+        }
+
 
         @*<span class="glyphicon glyphicon-plus glyph-button AddAuthor"></span>
         <span class="glyphicon glyphicon-remove RemoveAuthor" style="display:none;"></span>*@
     </td>
 </tr>
 <script type="text/javascript">
+
     $(".AddAuthor").click(function () {
         $.ajax({
             url: "@Url.Action("AuthorRow")",
