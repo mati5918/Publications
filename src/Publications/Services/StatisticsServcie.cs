@@ -36,19 +36,21 @@ namespace Publications.Services
 
         public StatisticsViewModel GetStatistics(StatisticsFilter filter)
         {
-            if (filter.StartOfTimeAmount == DateTime.MinValue && filter.EndOfTimeAmount == DateTime.MinValue)
+            if (filter.StartOfTimeAmount == null)
+                filter.StartOfTimeAmount = DateTime.MinValue;
+            if (filter.EndOfTimeAmount == null)
                 filter.EndOfTimeAmount = DateTime.MaxValue;
 
             if (filter.AuthorId == 0 && filter.KnowledgeBranchId == 0)
-                return GetOveralStatistics(filter.StartOfTimeAmount, filter.EndOfTimeAmount);
+                return GetOveralStatistics(filter.StartOfTimeAmount.Value, filter.EndOfTimeAmount.Value);
 
             if (filter.AuthorId == 0 && filter.KnowledgeBranchId != 0)
-                return GetBranchOfKnowledgeStatistics(filter.StartOfTimeAmount, filter.EndOfTimeAmount, filter.KnowledgeBranchId);
+                return GetBranchOfKnowledgeStatistics(filter.StartOfTimeAmount.Value, filter.EndOfTimeAmount.Value, filter.KnowledgeBranchId);
 
             if (filter.AuthorId != 0 && filter.KnowledgeBranchId == 0)
-                return GetAuthorStatistics(filter.StartOfTimeAmount, filter.EndOfTimeAmount, filter.AuthorId);
+                return GetAuthorStatistics(filter.StartOfTimeAmount.Value, filter.EndOfTimeAmount.Value, filter.AuthorId);
 
-            return GetAuthorInBranchOfKnowledgeStatistics(filter.StartOfTimeAmount, filter.EndOfTimeAmount, filter.AuthorId, filter.KnowledgeBranchId);
+            return GetAuthorInBranchOfKnowledgeStatistics(filter.StartOfTimeAmount.Value, filter.EndOfTimeAmount.Value, filter.AuthorId, filter.KnowledgeBranchId);
         }
 
         private StatisticsViewModel GetAuthorInBranchOfKnowledgeStatistics(DateTime startOfTimeAmount, DateTime endOfTimeAmount, int authorId, int branchOfKnowledgeId)
@@ -189,8 +191,8 @@ namespace Publications.Services
                     PublicationsCount = publications.Count(p => p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)),
                     PublicationsPercentage = 100 * publications.Count(p => p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)) / (double)_context.Publications.Count()
                 };
-
-                result.Add(item);
+                if (item.PublicationsCount != 0)
+                    result.Add(item);
             }
             return result;
         }

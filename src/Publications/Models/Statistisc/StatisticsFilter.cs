@@ -11,17 +11,12 @@ namespace Publications.Models.Statistisc
         public List<BranchOfKnowledge> BranchesOfKnowledge { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime StartOfTimeAmount { get; set; }
+        public DateTime? StartOfTimeAmount { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime EndOfTimeAmount { get; set; }
+        public DateTime? EndOfTimeAmount { get; set; }
+
         public int KnowledgeBranchId { get; set; }
         public int AuthorId { get; set; }
-
-        public StatisticsFilter()
-        {
-            StartOfTimeAmount=DateTime.MinValue;
-            EndOfTimeAmount=DateTime.MaxValue;
-        }
     }
 }
