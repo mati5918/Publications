@@ -20,31 +20,30 @@ namespace Publications.Services
             _context = context;
         }
 
-
         public List<AuthorViewModel> GetAllAuthors()
         {
-            var result= _context.Authors.Select(a=>new AuthorViewModel() {FullName = a.FirstName+ " "+a.SecondName, AuthorId = a.AuthorId, AcademicDegree = a.AcademicDegree}).ToList(); 
-            result.Add(new AuthorViewModel {FullName = "Brak wyboru", AuthorId = 0});
+            var result = _context.Authors.Select(a => new AuthorViewModel() { FullName = a.FirstName + " " + a.SecondName, AuthorId = a.AuthorId, AcademicDegree = a.AcademicDegree }).ToList();
+            result.Add(new AuthorViewModel { FullName = "Brak wyboru", AuthorId = 0 });
             return result;
         }
 
         public List<BranchOfKnowledge> GetAllBranchesOfKnowledge()
         {
-            var result= _context.BranchOfKnowledges.ToList();
-            result.Add(new BranchOfKnowledge {BranchOfKnowledgeId = 0, Name = "Brak wyboru"});
+            var result = _context.BranchOfKnowledges.ToList();
+            result.Add(new BranchOfKnowledge { BranchOfKnowledgeId = 0, Name = "Brak wyboru" });
             return result;
         }
 
         public StatisticsViewModel GetStatistics(StatisticsFilter filter)
         {
-            if(filter.StartOfTimeAmount==DateTime.MinValue&&filter.EndOfTimeAmount==DateTime.MinValue)
-                filter.EndOfTimeAmount=DateTime.MaxValue;
+            if (filter.StartOfTimeAmount == DateTime.MinValue && filter.EndOfTimeAmount == DateTime.MinValue)
+                filter.EndOfTimeAmount = DateTime.MaxValue;
 
-            if(filter.AuthorId==0&&filter.KnowledgeBranchId==0)
-               return GetOveralStatistics(filter.StartOfTimeAmount, filter.EndOfTimeAmount);
+            if (filter.AuthorId == 0 && filter.KnowledgeBranchId == 0)
+                return GetOveralStatistics(filter.StartOfTimeAmount, filter.EndOfTimeAmount);
 
-            if(filter.AuthorId == 0 && filter.KnowledgeBranchId != 0)
-                return GetBranchOfKnowledgeStatistics(filter.StartOfTimeAmount, filter.EndOfTimeAmount,filter.KnowledgeBranchId);
+            if (filter.AuthorId == 0 && filter.KnowledgeBranchId != 0)
+                return GetBranchOfKnowledgeStatistics(filter.StartOfTimeAmount, filter.EndOfTimeAmount, filter.KnowledgeBranchId);
 
             if (filter.AuthorId != 0 && filter.KnowledgeBranchId == 0)
                 return GetAuthorStatistics(filter.StartOfTimeAmount, filter.EndOfTimeAmount, filter.AuthorId);
@@ -68,15 +67,14 @@ namespace Publications.Services
             if (allPublicationsCount == 0)
                 allPublicationsCount = 1;
 
-            var result= new StatisticsViewModel
+            var result = new StatisticsViewModel
             {
-                AuthorName = author.FirstName+" "+author.SecondName,
-                KnowledgeBranchName =branchOfKnowledge.Name, 
-                PercentOfAllPublications = 100*publications.Count()/(double)allPublicationsCount, 
+                AuthorName = author.FirstName + " " + author.SecondName,
+                KnowledgeBranchName = branchOfKnowledge.Name,
+                PercentOfAllPublications = 100 * publications.Count() / (double)allPublicationsCount,
                 PublicationsCount = publications.Count(),
                 PublicationsPerKonwledgeBranch = new List<PublicationsPerKnowledgeBranch>(),
-                TimeAmount = $"Od {startOfTimeAmount:d} do {endOfTimeAmount:d}",
-                
+                TimeAmount = $"Od {startOfTimeAmount:d} do {endOfTimeAmount:d}"
             };
             if (startOfTimeAmount.Year == DateTime.MinValue.Year && endOfTimeAmount.Year == DateTime.MaxValue.Year)
                 result.TimeAmount = null;
@@ -97,13 +95,12 @@ namespace Publications.Services
 
             var result = new StatisticsViewModel()
             {
-              AuthorName = author.FirstName + " " + author.SecondName,
-              KnowledgeBranchName = null,
-              PercentOfAllPublications = 100*publications.Count()/(double)allPublicationsCount,  
-              PublicationsCount = publications.Count(),  
-              PublicationsPerKonwledgeBranch = GetPublicationsPerKnowledgeBranch(publications),
-              TimeAmount = $"Od {startOfTimeAmount:d} do {endOfTimeAmount:d}",
-              
+                AuthorName = author.FirstName + " " + author.SecondName,
+                KnowledgeBranchName = null,
+                PercentOfAllPublications = 100 * publications.Count() / (double)allPublicationsCount,
+                PublicationsCount = publications.Count(),
+                PublicationsPerKonwledgeBranch = GetPublicationsPerKnowledgeBranch(publications),
+                TimeAmount = $"Od {startOfTimeAmount:d} do {endOfTimeAmount:d}",
             };
             if (startOfTimeAmount.Year == DateTime.MinValue.Year && endOfTimeAmount.Year == DateTime.MaxValue.Year)
                 result.TimeAmount = null;
@@ -122,13 +119,11 @@ namespace Publications.Services
             var result = new StatisticsViewModel()
             {
                 AuthorName = null,
-                KnowledgeBranchName = null, 
+                KnowledgeBranchName = null,
                 PercentOfAllPublications = -1,
                 PublicationsCount = publications.Count(),
                 PublicationsPerKonwledgeBranch = GetPublicationsPerKnowledgeBranch(),
                 TimeAmount = $"Od {startOfTimeAmount:d} do {endOfTimeAmount:d}",
-                
-
             };
             if (startOfTimeAmount.Year == DateTime.MinValue.Year && endOfTimeAmount.Year == DateTime.MaxValue.Year)
                 result.TimeAmount = null;
@@ -137,7 +132,6 @@ namespace Publications.Services
 
         public StatisticsViewModel GetBranchOfKnowledgeStatistics(DateTime startOfTimeAmount, DateTime endOfTimeAmount, int branchOfKnowledgeId)
         {
-
             var branchOfKnowledge = _context.BranchOfKnowledges.First(b => b.BranchOfKnowledgeId == branchOfKnowledgeId);
 
             var publications = _context.Publications.Where(p =>
@@ -152,13 +146,11 @@ namespace Publications.Services
             var result = new StatisticsViewModel()
             {
                 AuthorName = null,
-                KnowledgeBranchName =branchOfKnowledge.Name,
-                PercentOfAllPublications = publications.Count()/(double)allPublicationsCount,
+                KnowledgeBranchName = branchOfKnowledge.Name,
+                PercentOfAllPublications = 100 * publications.Count() / (double)allPublicationsCount,
                 PublicationsCount = publications.Count(),
                 PublicationsPerKonwledgeBranch = new List<PublicationsPerKnowledgeBranch>(),
                 TimeAmount = $"Od {startOfTimeAmount:d} do {endOfTimeAmount:d}",
-                
-
             };
             if (startOfTimeAmount.Year == DateTime.MinValue.Year && endOfTimeAmount.Year == DateTime.MaxValue.Year)
                 result.TimeAmount = null;
@@ -168,13 +160,13 @@ namespace Publications.Services
         private List<PublicationsPerKnowledgeBranch> GetPublicationsPerKnowledgeBranch(IQueryable<Publication> publications)
         {
             var knowledgeBranches = _context.BranchOfKnowledges;
-            var result=new List<PublicationsPerKnowledgeBranch>();
+            var result = new List<PublicationsPerKnowledgeBranch>();
             foreach (var branchOfKnowledge in knowledgeBranches)
             {
                 var item = new PublicationsPerKnowledgeBranch
                 {
                     KnowledgeBranchName = branchOfKnowledge.Name,
-                    PublicationsCount = publications.Count(p =>p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)),
+                    PublicationsCount = publications.Count(p => p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)),
                     PublicationsPercentage = 100 * publications.Count(p => p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)) / (double)_context.Publications.Count(p => p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId))
                 };
 
@@ -187,28 +179,26 @@ namespace Publications.Services
         private List<PublicationsPerKnowledgeBranch> GetPublicationsPerKnowledgeBranch()
         {
             var knowledgeBranches = _context.BranchOfKnowledges;
-            var result=new List<PublicationsPerKnowledgeBranch>();
+            var result = new List<PublicationsPerKnowledgeBranch>();
             var publications = _context.Publications;
             foreach (var branchOfKnowledge in knowledgeBranches)
             {
                 var item = new PublicationsPerKnowledgeBranch
                 {
                     KnowledgeBranchName = branchOfKnowledge.Name,
-                    PublicationsCount = publications.Count(p =>p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)),
+                    PublicationsCount = publications.Count(p => p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)),
                     PublicationsPercentage = 100 * publications.Count(p => p.BranchOfKnowledgePublication.Any(bp => bp.BranchOfKnowledgeId == branchOfKnowledge.BranchOfKnowledgeId)) / (double)_context.Publications.Count()
                 };
-                
-                 result.Add(item);
+
+                result.Add(item);
             }
             return result;
         }
 
-
         public string GenerateReport(StatisticsViewModel statistics, ReportTypeEnum fileType)
         {
-            var filename= FileFormatHelper.GenerateXlsx(statistics);
+            var filename = FileFormatHelper.GenerateXlsx(statistics);
             return filename;
         }
     }
-
 }
