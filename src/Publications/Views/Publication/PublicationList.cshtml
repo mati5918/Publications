@@ -28,30 +28,63 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreationDate)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-publicationId="@item.Id" data-toggle="tooltip" data-placement="top" title="Szczegóły"><span class="glyphicon glyphicon-edit glyph-button"></span></a>&nbsp;&nbsp;
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreationDate)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-publicationId="@item.Id" data-toggle="tooltip" data-placement="top" title="Szczegóły"><span class="glyphicon glyphicon-check glyph-button"></span></a>&nbsp;&nbsp;
+                    <a class="removeBtn" data-publicationId="@item.Id" data-toggle="tooltip" data-placement="top" title="Usuń"><span class="glyphicon glyphicon-erase glyph-button"></span></a>&nbsp;&nbsp;
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 @*<script src="~/lib/datatable/datatables.min.js"></script>*@
 <script>
-       $(document).ready(function () {
-           $("#publications").DataTable();
-       });
+    $(document).ready(function () {
+        $("#publications").DataTable();
+    });
+    $(".removeBtn").click(function () {
+        var id = $(this).attr("data-publicationId");
+        var btn = $(this);
+        bootbox.confirm({
+            message: "Czy na pewno chcesz usunąć szablon?",
+            buttons: {
+                confirm: {
+                    label: 'Tak',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'Nie',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    var data = { publicationId: id };
+                    alert(JSON.stringify(data));
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Remove")",
+                        data: data,
+                        success: function (message) {
+                            btn.closest("tr").remove();
+                        }
+                    });
+                }
+            }
+        });
+    });
 </script>

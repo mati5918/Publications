@@ -50,7 +50,7 @@ namespace Publications.Controllers
         {
             return PartialView("BranchRow");
         }
-        
+
         public IActionResult AddPublication()
         {
             return View(new SavePublicationVM());
@@ -90,7 +90,7 @@ namespace Publications.Controllers
                     FieldValueVM fieldValue = new FieldValueVM() { FieldType = FieldType.File, Name = file.Name, Value = Newtonsoft.Json.JsonConvert.SerializeObject(fileProperties), isChecked = false };
                     savePublication.FieldsValue.Add(fieldValue);
                 }
-                
+
             }
             bool isDone = publicationService.AddPublication(savePublication);
             if (isDone)
@@ -106,7 +106,7 @@ namespace Publications.Controllers
         public FileResult download(int? FieldViewId)
         {
             FileProperties fileProperties = publicationService.GetFileInformationById(FieldViewId);
-          string fileName = fileProperties.FileName;
+            string fileName = fileProperties.FileName;
             string filePath = fileProperties.FilePath;
             string fileText = System.IO.File.ReadAllText(filePath);
             string contentType;
@@ -114,11 +114,11 @@ namespace Publications.Controllers
             FileResult fr = File(Encoding.UTF8.GetBytes(fileText), "application/pdf", fileName);
             return fr;
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost]
-        public IActionResult Remove(int id)
+        public IActionResult Remove(int? publicationId)
         {
-
+            publicationService.RemovePublication(publicationId);            
             return Json("");
         }
     }

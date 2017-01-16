@@ -249,5 +249,19 @@ namespace Publications.Services
             }
             
         }
+        public bool RemovePublication(int? id)
+        {
+            try
+            {
+                Publication pub = (from p in db.Publications where p.PublicationId == id select p).ToList()[0];
+                db.Publications.Remove(pub);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
     }
 }
