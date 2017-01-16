@@ -9,6 +9,8 @@
     bool hasPublications = Model.PublicationsCount > 0;
     ViewData["Title"] = title;
     //var selectsData = fieldsProvider.GetSelectValues();
+    string adminRole = "Admin";
+    bool isAdmin = User.IsInRole(adminRole);
 }
 
 <div class="row">
@@ -17,15 +19,7 @@
     </div>
     <div class="col-sm-8">
         <div class="pull-right">
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <button class="btn btn-primary" id="btnSave" style="margin-top:20px;"><span class="glyphicon glyphicon-save"></span> Zapisz</button>
-            }
-            else
-            {
-                <button class="btn btn-primary"  id="btnSave" style="margin-top:20px;" disabled><span class="glyphicon glyphicon-save"></span> Zapisz</button>
-            }
-
+            <button class="btn btn-primary" id="btnSave" style="margin-top:20px;"><span class="glyphicon glyphicon-save"></span> Zapisz</button>
         </div>
     </div>
 </div>
@@ -38,7 +32,7 @@
         </div>
     </div>
 }
-@if (hasPublications)
+@if (hasPublications && isAdmin)
 {
     <div class="row readOnlyAlert">
         <div class="alert alert-warning col-sm-12">
@@ -208,20 +202,16 @@
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
         renumerateTableRows();
-         @if (SignInManager.IsSignedIn(User))
-         {
-             @:setSaveTemplateButtonEnabled();
-         }
-         
+        var isAdmin = '@isAdmin' == "True";
         var hasPublications = '@hasPublications' == "True";
-        console.log(hasPublications);
-        if (hasPublications) {
-            setReadOnly();
-        }
+        //console.log(hasPublications);
+
         $('select').select2({
             language: "pl"
         });
-
+        if (hasPublications || !isAdmin) {
+            setReadOnly();
+        }
         $("#addField").click(function () {
             $.ajax({
                 url: "@Url.Action("AddField")",
@@ -470,6 +460,9 @@
                     });
                 }
             }
+            if (!isAdmin || hasPublications) {
+                isValid = false;
+            }
             $("#btnAddField").prop("disabled", !isValid);
         };
 
@@ -492,6 +485,8 @@
             $("textarea").prop('disabled', true);
             $("select").prop('disabled', true);
             $("button").prop('disabled', true);
+            $("#closeModal").prop('disabled', false);
+            $("#btnCloseModal").prop('disabled', false);
         }
     });
 </script>

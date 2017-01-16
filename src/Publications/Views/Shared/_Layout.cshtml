@@ -35,10 +35,14 @@
                 </button>
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Publications</a>
             </div>
+            @inject SignInManager<Publications.Models.Entities.ApplicationUser> SignInManager
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Templates" asp-action="Browse">Szablony</a></li>
-                </ul>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="" asp-controller="Templates" asp-action="Browse">Szablony</a></li>
+                    </ul>
+                }
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Statistics" asp-action="Statistics">Statystyki</a></li>
                 </ul>
