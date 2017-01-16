@@ -15,7 +15,7 @@ using System.Text;
 
 namespace Publications.Controllers
 {
-    [Authorize]
+    
     public class PublicationController : Controller
     {
         PublicationService publicationService;
@@ -23,13 +23,13 @@ namespace Publications.Controllers
         {
             this.publicationService = publicationService;
         }
-        [AllowAnonymous]
+        
         public IActionResult PublicationList()
         {
             var publicationList = publicationService.GetAllPublications();
             return View(publicationList);
         }
-        [AllowAnonymous]
+       
         public IActionResult Details(int? publicationId)
         {
             Publication publication = publicationService.GetPublicationById(publicationId);
@@ -54,11 +54,12 @@ namespace Publications.Controllers
         {
             return PartialView("BranchRow");
         }
-
+        [Authorize]
         public IActionResult AddPublication()
         {
             return View(new SavePublicationVM() { isExist = false });
         }
+        [Authorize(Roles = "Admin")]
         public IActionResult EditPublication(int? publicationId)
         {
             SavePublicationVM sp = publicationService.GetSavePublicationVMById(publicationId);
@@ -77,6 +78,7 @@ namespace Publications.Controllers
             TemplateFieldValueVM tfv = new TemplateFieldValueVM() { FieldValuesVM = fv, publicationTemplates = publicationService.GetAllPublicationTemplate().ToList() };
             return PartialView("TemplatesSelectList", tfv);
         }
+        [Authorize]
         [HttpPost]
         public IActionResult Add(SavePublicationStringVM savePublicationString)
         {
@@ -132,7 +134,7 @@ namespace Publications.Controllers
             FileResult fr = File(Encoding.UTF8.GetBytes(fileText), "application/pdf", fileName);
             return fr;
         }
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Remove(int? publicationId)
         {

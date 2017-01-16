@@ -4,7 +4,11 @@
 @{
     ViewData["Title"] = "PublicationList";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string adminRole = "Admin";
+    bool isAdmin = User.IsInRole(adminRole);
 }
+
+    
 
 <h2>PublicationList</h2>
 <p>
@@ -46,8 +50,13 @@
                 </td>
                 <td>
                     <a asp-action="Details" asp-route-publicationId="@item.Id" data-toggle="tooltip" data-placement="top" title="Szczegóły"><span class="glyphicon glyphicon-check glyph-button"></span></a>&nbsp;&nbsp;
-                    <a class="removeBtn" data-publicationId="@item.Id" data-toggle="tooltip" data-placement="top" title="Usuń"><span class="glyphicon glyphicon-erase glyph-button"></span></a>&nbsp;&nbsp;
-                    <a asp-action="EditPublication" asp-route-publicationId="@item.Id" data-toggle="tooltip" data-placement="top" title="Edytuj"><span class="glyphicon glyphicon-pencil glyph-button"></span></a>&nbsp;&nbsp;
+                    
+                   @if (isAdmin)
+                   {
+                    <a class="removeBtn" data-publicationId="@item.Id" data-toggle="tooltip" data-placement="top" title="Usuń" style="margin-right:8px"><span class="glyphicon glyphicon-erase glyph-button"></span></a>
+                    <a asp-action="EditPublication" asp-route-publicationId="@item.Id" data-toggle="tooltip" data-placement="top" title="Edytuj"><span class="glyphicon glyphicon-pencil glyph-button"></span></a>
+                   }
+                    
                 </td>
             </tr>
         }
