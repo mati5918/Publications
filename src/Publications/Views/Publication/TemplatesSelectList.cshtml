@@ -20,9 +20,9 @@
         $.ajax({
             url: "@Url.Action("FieldValueRow")",
             type: "GET",
-            data: @Model.FieldValuesVM,
         data: {
-            templateId: PublicationTemplate.value
+            templateId: PublicationTemplate.value,
+            publicationId: @Model.publicationId
 
         },
         success: function (response) {
@@ -37,7 +37,8 @@
             url: "@Url.Action("FieldValueRow")",
             type: "GET",
             data: {
-                templateId: PublicationTemplate.value
+                templateId: PublicationTemplate.value,
+                publicationId: @Model.publicationId
             },
             success: function (response) {
                 $("#FieldValueList").html(response);

@@ -23,6 +23,6 @@ namespace Publications.Models.ViewModels
     public class TemplateFieldValueVM
     {
         public List<PublicationTemplate> publicationTemplates { get; set; }
-        public List<FieldValueVM> FieldValuesVM { get; set; }
+        public int publicationId { get; set; }
     }
 }

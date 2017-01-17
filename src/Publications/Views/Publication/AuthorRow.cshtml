@@ -4,10 +4,23 @@
         <select asp-for="AcademicDegree" asp-items="Html.GetEnumSelectList<AcademicDegree>()" class="form-control degree" ></select>
     </td>
     <td class="col-md-3">
+        @if(Model.FirstName != null){
         <input class="form-control firstname" value="@Model.FirstName" width="40" />
+        }
+        else
+        {
+            <input class="form-control firstname" width="40" />
+        }
     </td>
     <td class="col-md-3">
+@if (Model.SecondName != null)
+{
         <input class="form-control secondname" width="40" value="@Model.SecondName" />
+}
+else
+{
+    <input class="form-control secondname" width="40" />
+}
     </td>
     <td class="col-md-3">
         @if (Model.AuthorId == 0)

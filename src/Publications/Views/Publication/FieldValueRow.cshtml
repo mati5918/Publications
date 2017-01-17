@@ -28,7 +28,14 @@
                             <p class="fieldtype">@item.FieldType</p>
                         </td>
                         <td>
-                            <input class="form-control fieldvalue" width="40" />
+                            @if (item.Value == null)
+                            {
+                                <input class="form-control fieldvalue" width="40" />
+                            }
+                            else
+                            {
+                                <input class="form-control fieldvalue" value="@item.Value" width="40" />
+                            }
                         </td>
                     </tr>
                     break;
@@ -41,7 +48,15 @@
                             <p class="fieldtype">@item.FieldType</p>
                         </td>
                         <td>
-                            <textarea data-bind="item.Value" class="form-control fieldvalue"></textarea>
+                            @if (item.Value == null)
+                            {
+                                <textarea class="form-control fieldvalue"></textarea>
+                            }
+                            else
+                            {
+                                <textarea class="form-control fieldvalue">@item.Value</textarea>
+                            }
+                            
                         </td>
                     </tr>
                     break;
@@ -54,7 +69,15 @@
                             <p class="fieldtype">@item.FieldType</p>
                         </td>
                         <td>
-                            <input type="number" class="form-control fieldvalue" width="40" />
+                            @if (item.Value == null)
+                            {
+                                <input type="number" class="form-control fieldvalue" width="40" />
+                            }
+                            else
+                            {
+                                <input type="number" class="form-control fieldvalue" width="40" value="@item.Value"/>
+                            }
+                            
                         </td>
                     </tr>
                     break;
@@ -67,7 +90,15 @@
                             <p class="fieldtype">@item.FieldType</p>
                         </td>
                         <td>
-                            <input type="date" class="form-control fieldvalue" />
+                            @if (item.Value == null)
+                            {
+                                <input type="date" class="form-control fieldvalue" />
+                            }
+                            else
+                            {
+                                <input type="date" class="form-control fieldvalue" value="@item.Value"/>
+                            }
+                            
                         </td>
                     </tr>
                     break;
@@ -80,7 +111,15 @@
                             <p class="fieldtype">@item.FieldType</p>
                         </td>
                         <td>
-                            <input type="checkbox" class="form-control fieldvalue" width="10" height="10" />
+                            @if (item.Value == null)
+                            {
+                                <input type="checkbox" class="form-control fieldvalue" width="10" height="10" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" class="form-control fieldvalue" width="10" height="10" checked="@item.Value" />
+                            }
+                            
                         </td>
                     </tr>
                     break;
@@ -93,7 +132,15 @@
                             <p class="fieldtype">@item.FieldType</p>
                         </td>
                         <td>
-                            <input type="file" class="form-control fieldvalue" />
+                            @if (item.Value == null)
+                            {
+                                <input type="file" class="form-control fieldvalue" />
+                            }
+                            else
+                            {
+                                <input type="file" class="form-control fieldvalue" value="@item.Value"/>
+                            }
+                            
                         </td>
                     </tr>
                     break;
@@ -107,7 +154,15 @@
                         </td>
                         <td>
                             @inject Publications.Services.FieldsProvider fieldsProvider
-                            <select class="form-control fieldvalue" asp-items="fieldsProvider.GetSelectValues(item.Name)"></select>
+                            @if (item.Value == null)
+                            { 
+                                <select class="form-control fieldvalue" asp-items="fieldsProvider.GetSelectValues(item.Name)"></select>
+                            }
+                            else
+                            {
+                                <select class="form-control fieldvalue" asp-items="fieldsProvider.GetSelectValues(item.Name)" ></select>
+                            }
+                            
                         </td>
                     </tr>
                     break;

@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     bool k = Model.isExist;
     string ButtonText = k ? "Edytuj publikację" : "Dodaj publikację do bazy";
-    
+
 }
 <h3>
     <button class="btn btn-primary pull-right" type="button"
@@ -40,7 +40,6 @@
                                     @Html.Partial("BranchRow", item);
                                 }
                             }
-                            @Html.Partial("BranchRow", new Publications.Models.Entities.BranchOfKnowledge())
                             
                         </tbody>
                     </table>
@@ -76,7 +75,6 @@
                             @Html.Partial("AuthorRow", item);
                         }
                     }
-                    @Html.Partial("AuthorRow", new Publications.Models.Entities.Author()) 
                 </tbody>
             </table>
         </div>
@@ -105,10 +103,12 @@
     $(document).ready(function () {
         var True = true;
         var False = false;
+        //alert(JSON.stringify(@Model.FieldsValue));
         var isExist = @Model.isExist;
         $.ajax({
             url: "@Url.Action("ShowTemplatesList")",
             type: "GET",
+            data: {publicationId: @Model.Id},
             success: function (response) {
                 $("#TemplateList").html(response);
                 $('#PublicationTemplate').val(@Model.TemplateId);
@@ -132,11 +132,13 @@
                 $("#Branches").append(response);
             }
         });
-        
-        
+
+
     });
     $("#Createbtn").click(function () {
         var data = collectPublicationData();
+        var True = true;
+        var False = false;
         $.ajax({
             type: "POST",
             url: "@Url.Action("Add")",
@@ -146,6 +148,21 @@
             success: function (message) {
                 $("#TemplateList").html(message)
                 bootbox.alert("Dodano publikację do bazy");
+                var temp = @Model.isExist;
+                    if(!temp){
+                        setTimeout(function(){
+                            window.location.href = "/Publication/PublicationList";
+                        },
+        1400);
+                    }
+                    else{
+                        setTimeout(function(){
+                            window.location.href = "/Publication/Details?publicationId=" + @Model.Id.ToString();
+                        },
+1400);
+                
+                    }
+                
             }
         });
         return false;
@@ -176,7 +193,7 @@
                 FieldsValue.push(fieldValue);
             }
         });
-
+        var id = @Model.Id;
 
         var Authors = [];
         $("#Authors tbody tr").each(function (i, v) {
@@ -201,6 +218,7 @@
         var PublicationVM = {
             BranchesOfKnowledge: BranchesOfKnowledge,
             Authors: Authors,
+            publicationId: id,
             FieldsValue: FieldsValue,
             Title: $("#Title").val(),
             TemplateId: $("#PublicationTemplate").val()
@@ -212,6 +230,7 @@
         form.append("FieldsValue", JSON.stringify(FieldsValue));
         form.append("Title", PublicationVM.Title);
         form.append("TemplateId", PublicationVM.TemplateId);
+        form.append("publicationId", PublicationVM.publicationId);
         $(files).each(function (i, fileInfo) {
             form.append(fileInfo.Name, fileInfo.File)
 

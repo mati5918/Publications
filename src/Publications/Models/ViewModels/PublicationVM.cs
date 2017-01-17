@@ -31,7 +31,7 @@ namespace Publications.Models.ViewModels
 
     public class SavePublicationStringVM
     {
-        public int Id { get; set; }
+        public int publicationId { get; set; }
         public string Title { get; set; }
         public int TemplateId { get; set; }
         public string FieldsValue { get; set; }

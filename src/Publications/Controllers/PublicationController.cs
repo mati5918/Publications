@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,22 +37,27 @@ namespace Publications.Controllers
             return View(publicationVM);
         }
 
-        public IActionResult FieldValueRow(List<FieldValueVM> fv, int? templateId)
+        public IActionResult FieldValueRow(int? publicationId, int? templateId)
         {
             IEnumerable<FieldValueVM> fieldValues;
-            if (fv != null)
-                fieldValues = publicationService.GenerateNewFieldValue(templateId);
-            else {
+            if (publicationId != null && publicationId != 0)
+            {
+                Publication pub = publicationService.GetPublicationById(publicationId);
+                fieldValues = publicationService.GetFieldValueVmOfPublication(pub);
             }
-            return PartialView(fv);
+            else
+            {
+                fieldValues = publicationService.GenerateNewFieldValue(templateId);
+            }
+            return PartialView(fieldValues);
         }
         public IActionResult AuthorRow()
         {
-            return PartialView("AuthorRow");
+            return PartialView("AuthorRow", new Author());
         }
         public IActionResult BranchRow()
         {
-            return PartialView("BranchRow");
+            return PartialView("BranchRow", new BranchOfKnowledge());
         }
         [Authorize]
         public IActionResult AddPublication()
@@ -73,9 +78,9 @@ namespace Publications.Controllers
                 return Json("publication: notexist");
             }
         }
-        public IActionResult ShowTemplatesList(List<FieldValueVM> fv)
+        public IActionResult ShowTemplatesList(int publicationId)
         {
-            TemplateFieldValueVM tfv = new TemplateFieldValueVM() { FieldValuesVM = fv, publicationTemplates = publicationService.GetAllPublicationTemplate().ToList() };
+            TemplateFieldValueVM tfv = new TemplateFieldValueVM() { publicationId = publicationId, publicationTemplates = publicationService.GetAllPublicationTemplate().ToList() };
             return PartialView("TemplatesSelectList", tfv);
         }
         [Authorize]
@@ -84,7 +89,7 @@ namespace Publications.Controllers
         {
             SavePublicationVM savePublication = new SavePublicationVM
             {
-                Id = savePublicationString.Id,
+                Id = savePublicationString.publicationId,
                 TemplateId = savePublicationString.TemplateId,
                 Title = savePublicationString.Title,
                 BranchesOfKnowledge = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BranchOfKnowledge>>(savePublicationString.BranchesOfKnowledge),
@@ -112,14 +117,22 @@ namespace Publications.Controllers
                 }
 
             }
-            bool isDone = publicationService.AddPublication(savePublication);
-            if (isDone)
+            bool isDone;
+            if (savePublication.Id == 0)
             {
-                return Json(new { success = true, message = "Zapisano pomy?lnie!" });
+                isDone = publicationService.AddPublication(savePublication);
             }
             else
             {
-                return Json(new { success = false, message = "Wyst?pi? b??d w zapisie!" });
+                isDone = publicationService.EditPublication(savePublication);
+            }
+            if (isDone)
+            {
+                return Json(new { success = true, message = "Zapisano pomyślnie!" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Wystąpił błąd w zapisie!" });
             }
 
         }

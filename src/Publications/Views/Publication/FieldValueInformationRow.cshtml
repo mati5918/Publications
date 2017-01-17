@@ -7,7 +7,17 @@
         @Html.DisplayFor(modelItem => Model.Name)
     </td>
     <td class="col-sm-2">
-        @Html.DisplayFor(modelItem => Model.Value)
+        @if (Model.FieldType != FieldType.Select)
+        {
+            @Html.DisplayFor(modelItem => Model.Value)
+        }
+        else
+        {
+            @inject Publications.Services.FieldsProvider fieldsProvider
+            @fieldsProvider.GetSelectValue(Model.Name, int.Parse(Model.Value));
+
+        }
+
     </td>
 </tr>
 }

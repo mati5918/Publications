@@ -12,7 +12,7 @@
 
 <h2>PublicationList</h2>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="AddPublication">Create New</a>
 </p>
 <table id="publications" class="table">
     <thead>
@@ -85,7 +85,6 @@
             callback: function (result) {
                 if (result) {
                     var data = { publicationId: id };
-                    alert(JSON.stringify(data));
                     $.ajax({
                         type: "POST",
                         url: "@Url.Action("Remove")",

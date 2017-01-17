@@ -108,6 +108,83 @@ namespace Publications.Services
         {
             return (from temp in db.PublicationTemplates where temp.PublicationTemplateId == id select temp).ToList()[0];
         }
+
+        public bool EditPublication(SavePublicationVM savePublication)
+        {
+            try
+            {
+                Publication pub = (from f in db.Publications where f.PublicationId == savePublication.Id select f).ToArray()[0];
+                List<AuthorPublication> aps = (from a in db.AuthorPublications where a.PublicationId == pub.PublicationId select a).ToList();
+                foreach (var item in aps)
+                {
+                    db.AuthorPublications.Remove(item);
+                }
+                List<BranchOfKnowledgePublication> bons = (from b in db.BranchOfKnowledgePublications where b.PublicationId == pub.PublicationId select b).ToList();
+                foreach (var item in bons)
+                {
+                    db.BranchOfKnowledgePublications.Remove(item);
+                }
+                List<FieldValue> fieldValues = (from f in db.FieldValues where f.PublicationId == pub.PublicationId select f).ToList();
+                List<FieldValueVM> fieldsValuesVM = GetFieldValueVmOfPublication(pub);
+                List<FieldValueVM> correctValues = new List<FieldValueVM>();
+                foreach (var item in fieldsValuesVM)
+                {
+                    bool temp = false;
+                    foreach (var item1 in savePublication.FieldsValue)
+                    {
+                        if(item.Name == item1.Name)
+                        {
+                            correctValues.Add(item1);
+                            temp = true;
+                        }
+                    }
+                    if (!temp)
+                    {
+                        correctValues.Add(item);
+                    }
+                }
+                foreach (var item in fieldValues)
+                {
+                    db.FieldValues.Remove(item);
+                }
+                foreach (var item in correctValues)
+                {
+                    PublicationField pf = findFieldByName(item.Name);
+                    db.FieldValues.Add(new FieldValue() { PublicationId = pub.PublicationId, PublicationFieldId = pf.PublicationFieldId, Value = item.FieldType != FieldType.Boolean?item.Value:item.isChecked.ToString() });
+                }
+                foreach (var item in savePublication.Authors)
+                {
+                    if (!IsAuthorExist(item))
+                    {
+                        db.Authors.Add(item);
+                        db.AuthorPublications.Add(new AuthorPublication() { Author = item, Publication = pub });
+                    }
+                    else
+                    {
+                        db.AuthorPublications.Add(new AuthorPublication() { Author = GetTheSameAuthor(item), Publication = pub });
+                    }
+                }
+                foreach (var item in savePublication.BranchesOfKnowledge)
+                {
+                    if (!IsBranchExist(item))
+                    {
+                        db.BranchOfKnowledges.Add(item);
+                        db.BranchOfKnowledgePublications.Add(new BranchOfKnowledgePublication() { BranchOfKnowledge = item, Publication = pub });
+                    }
+                    else
+                    {
+                        db.BranchOfKnowledgePublications.Add(new BranchOfKnowledgePublication() { BranchOfKnowledge = GetTheSameBranch(item), Publication = pub });
+                    }
+                }
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         private string GetTitleOfPublication(int publicationId)
         {
             return (from publication in db.Publications where publication.PublicationId == publicationId select publication).ToList()[0].Title;
@@ -282,7 +359,7 @@ namespace Publications.Services
             {
                 List<Author> a = GetAuthorsOfPublication(pub.PublicationId);
                 List<BranchOfKnowledge> b = GetBranchesOfPublication(pub.PublicationId);
-                return new SavePublicationVM() { Id = pub.PublicationId, TemplateId = pub.TemplateId, Title = pub.Title, Authors = a, BranchesOfKnowledge = b};
+                return new SavePublicationVM() { Id = pub.PublicationId, TemplateId = pub.TemplateId, Title = pub.Title, Authors = a, BranchesOfKnowledge = b, FieldsValue = GetFieldValueVmOfPublication(pub)};
             }
             catch (Exception e)
             {
@@ -298,6 +375,17 @@ namespace Publications.Services
         {
             List<BranchOfKnowledge> branches = (from b in db.BranchOfKnowledges join bp in db.BranchOfKnowledgePublications on b.BranchOfKnowledgeId equals bp.BranchOfKnowledgeId join p in db.Publications on bp.PublicationId equals p.PublicationId where p.PublicationId == publicationId select b).ToList();
             return branches;
+        }
+        public List<FieldValueVM> GetFieldValueVmOfPublication(Publication pub)
+        {
+            List<FieldValueVM> fvl = new List<FieldValueVM>();
+            List<FieldValue> fvm = (from p in db.Publications join fv in db.FieldValues on p.PublicationId equals fv.PublicationId where p.PublicationId == pub.PublicationId select fv).ToList();
+            foreach (var item in fvm)
+            {
+                PublicationField pf = (from f in db.PublicationFields where f.PublicationFieldId == item.PublicationFieldId select f).ToList()[0];
+                fvl.Add(new FieldValueVM() { FieldId = item.FieldValueId, FieldType = pf.Type, Name = pf.Name, Value = item.Value });
+            }
+            return fvl;
         }
     }
 }
